@@ -13,9 +13,24 @@ class Creation extends Konva.Group {
         this.textarea = this.createInput();
     }
 
-    updateTextAreaPos(pos) {
+    hide() {
+        super.hide();
+        this.textarea.style.display = 'none';
+    }
+
+    show(pos) {
+        super.show();
+        this.textarea.style.display = 'block';
+        this.x(pos.x);
+        this.y(pos.y);
+        this.updateTextAreaPos();
+    }
+
+    updateTextAreaPos() {
         // then lets find position of stage container on the page:
         var stageBox = this.config.vbm.stage.container().getBoundingClientRect();
+
+        var pos = this.absolutePosition();
 
         // so position of textarea will be the sum of positions above:
         var areaPosition = {
@@ -34,7 +49,7 @@ class Creation extends Konva.Group {
 
     createInput() {
         // get the right position for the textarea
-        var areaPosition = this.updateTextAreaPos(this.absolutePosition());
+        var areaPosition = this.updateTextAreaPos();
 
         // create textarea and style it
         var textarea = document.createElement('textarea');
@@ -82,9 +97,8 @@ class Creation extends Konva.Group {
 
         // on dragging move also the complete Block 
         box.dragBoundFunc(function (pos) {
-            that.x(pos.x);
-            that.y(pos.y);
-            that.updateTextAreaPos(pos);
+            that.absolutePosition(pos);
+            that.updateTextAreaPos();
 
             return {
                 x: pos.x,
@@ -93,5 +107,12 @@ class Creation extends Konva.Group {
         });
 
         return box;
+    }
+
+    createList() {
+        var that = this;
+        that.config.vbm.logic.blocks.forEach(element => {
+            
+        });
     }
 }

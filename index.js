@@ -1,6 +1,8 @@
 class VBM {
-    constructor(element) {
+    constructor(element, logic) {
+        this.logic = logic;
         var that = this;
+
 
         // We use a single layer for all drawings
         this.layer = new Konva.Layer();
@@ -17,7 +19,8 @@ class VBM {
         this.stage = new Konva.Stage({
             container: element,
             width: document.getElementById(element).offsetWidth,
-            height: document.getElementById(element).offsetHeight
+            height: document.getElementById(element).offsetHeight,
+            draggable: true
         });
 
         // The normal mouse icon is the crosshair in out VBM
@@ -41,6 +44,24 @@ class VBM {
             }
         });
 
+        // update on drag end
+        this.stage.on('dragend', function (evt) {
+            that.creationArea.updateTextAreaPos();
+        });
+
+        // on dragging move also special inputs
+        this.stage.dragBoundFunc(function (pos) {
+            if (that.newConnection !== null) {
+                return that.stage.absolutePosition();
+            }
+
+            that.creationArea.updateTextAreaPos();
+            return {
+                x: pos.x,
+                y: pos.y
+            };
+        });
+
         // update newConnection position is requried
         document.body.onmousemove = function (evt) {
             if (that.newConnection != null) {
@@ -48,6 +69,17 @@ class VBM {
                 that.layer.draw();
             }
         };
+
+
+        // define the creation dialog
+        this.creationArea = new Creation({
+            vbm: that,
+            x: 100,
+            y: 100
+        });
+        this.layer.add(this.creationArea);
+        this.creationArea.hide();
+
 
         // add the layer to the stage
         this.stage.add(this.layer);
@@ -67,15 +99,12 @@ class VBM {
     }
 
     showCreationArea() {
-        var that = this;
-
-        var add = new Creation({
-            vbm: that,
-            x: 100,
-            y: 100
-        });
-        this.layer.add(add);
+        this.creationArea.show({ x: 300, y: 300 });
         this.layer.draw();
+    }
+
+    hideCreationArea() {
+        this.creationArea.hide();
     }
 }
 
@@ -98,3 +127,48 @@ vbm.addBlock({
 });
 
 vbm.showCreationArea();
+
+var logic = {
+    rules: {
+        strictInputOutput: true,    // Only allows to link inputs and outputs
+        strictDifferentBlock: true, // Deny any link to the own block
+        strictConnections: true     // Only allows to link matching types
+    },
+    style: {
+        background: '#EEEEEE',
+    },
+    connections: [
+        { type: 'Execution', icon: 'circle', color: 'black' },
+        { type: 'String', icon: 'circle', color: 'purple' },
+        { type: 'Integer', icon: 'circle', color: 'green' },
+        { type: 'Float', icon: 'circle', color: 'green' },
+    ],
+    blocks: [
+        {
+            id: 1,
+            name: 'Start',
+            nameEdit: false,
+            description: 'Startpoint for the logic',
+            inputs: [],
+            outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }]
+        },
+        {
+            id: 2,
+            name: 'Console Log',
+            nameEdit: false,
+            description: 'Standard printf/log output to the terminal',
+            inputs: [
+                { name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
+                { name: 'Text', description: 'The text to log', type: 'String' }],
+            outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }]
+        },
+        {
+            id: 3,
+            name: 'Static Text',
+            nameEdit: false,
+            description: 'Definition of a static text',
+            inputs: [],
+            outputs: [{ name: 'Text', nameEdit: true, description: 'The defined static text', type: 'String' }]
+        }
+    ]
+};

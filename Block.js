@@ -30,9 +30,7 @@ class Block extends Konva.Group {
 
         // on dragging move also the complete Block 
         box.dragBoundFunc(function (pos) {
-            that.x(pos.x);
-            that.y(pos.y);
-            //that.updateConPos();
+            that.absolutePosition(pos);
             that.config.vbm.redrawConnections();
 
             return {

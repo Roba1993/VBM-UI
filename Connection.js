@@ -4,11 +4,6 @@
 class Connection extends Konva.Line {
     constructor(config) {
         super({
-            points: Connection.calculateBezier(
-                config.start[0],
-                config.start[1],
-                config.end[0],
-                config.end[1]),
             stroke: 'green',
             lineCap: 'round',
             lineJoin: 'round',
@@ -19,6 +14,7 @@ class Connection extends Konva.Line {
         this.linkObjA = null;
         this.linkObjB = null;
 
+        this.setPosition(config.start, config.end);
         this.config.vbm.conGroup.add(this);
     }
 
@@ -29,7 +25,8 @@ class Connection extends Konva.Line {
      * @param {x/y Array of the end position} posB 
      */
     setPosition(posA, posB) {
-        this.points(Connection.calculateBezier(posA[0], posA[1], posB[0], posB[1]));
+        var pa = this.config.vbm.stage.absolutePosition();
+        this.points(Connection.calculateBezier(posA[0] - pa.x, posA[1] - pa.y, posB[0]- pa.x, posB[1] - pa.y));
     }
 
     /**
@@ -40,7 +37,8 @@ class Connection extends Konva.Line {
      */
     setEndPosition(x, y) {
         var points = this.points();
-        this.points(Connection.calculateBezier(points[0], points[1], x, y));
+        var pa = this.config.vbm.stage.absolutePosition();
+        this.points(Connection.calculateBezier(points[0], points[1], x - pa.x, y - pa.y));
     }
 
     /**
