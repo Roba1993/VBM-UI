@@ -16,6 +16,11 @@ class Node extends Konva.Group {
         this.addCircle();
         this.addText();
 
+        // on entering we want to see the move mouse
+        this.on('mouseover', function () {
+            document.body.style.cursor = 'crosshair';
+        });
+
         this.on('mousedown', function (evt) {
             if (that.vbm.newConnection != null) {
                 return;
@@ -31,11 +36,15 @@ class Node extends Konva.Group {
         });
 
         this.on('mouseup', function (evt) {
+            // No links to own block
             if (that.vbm.newConnection.linkObjA.config.block == that.config.block) {
                 return;
             }
 
-            console.log(evt);
+            // Only Input to Output mapping allowed
+            if(that.vbm.newConnection.linkObjA.config.io == evt.target.parent.config.io) {
+                return;
+            }
 
             // connect the nodes together
             that.vbm.newConnection.linkObjB = evt.target.parent;
