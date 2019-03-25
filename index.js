@@ -49,6 +49,13 @@ class VBM {
             that.creationArea.updateTextAreaPos();
         });
 
+        // context menu opne create
+        this.stage.on('contextmenu', function (evt) {
+            that.creationArea.toggle({x: evt.evt.x, y: evt.evt.y});
+            that.layer.draw();
+            evt.evt.preventDefault();
+        });
+
         // on dragging move also special inputs
         this.stage.dragBoundFunc(function (pos) {
             if (that.newConnection !== null) {
@@ -92,14 +99,25 @@ class VBM {
         this.layer.draw();
     }
 
-    addBlock(config) {
-        var block = new Block(config);
-        this.layer.add(block);
-        this.layer.draw();
+    addBlock(id, x, y) {
+        var that = this;
+        this.logic.blocks.forEach(block => {
+            if(block.id == id) {
+                var b = JSON.parse(JSON.stringify(block));
+                b.vbm = that;
+                b.x = x;
+                b.y = y;
+                this.layer.add(new Block(b));
+                this.layer.draw();
+                return true;
+            }
+        });
+
+        return false;
     }
 
-    showCreationArea() {
-        this.creationArea.show({ x: 300, y: 300 });
+    showCreationArea(x, y) {
+        this.creationArea.show({ x: x, y: y });
         this.layer.draw();
     }
 
@@ -108,25 +126,6 @@ class VBM {
     }
 }
 
-var vbm = new VBM('container');
-
-vbm.addBlock({
-    vbm: vbm,
-    x: 30,
-    y: 30,
-    inputs: [null, null],
-    outputs: [],
-});
-
-vbm.addBlock({
-    vbm: vbm,
-    x: 30,
-    y: 30,
-    inputs: [null],
-    outputs: [null, null],
-});
-
-vbm.showCreationArea();
 
 var logic = {
     rules: {
@@ -172,3 +171,7 @@ var logic = {
         }
     ]
 };
+
+
+var vbm = new VBM('container', logic);
+vbm.addBlock(1, 50, 50);

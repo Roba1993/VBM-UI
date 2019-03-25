@@ -11,6 +11,9 @@ class Creation extends Konva.Group {
 
         this.add(this.createBox());
         this.textarea = this.createInput();
+        this.textarea.focus();
+
+        this.createList();
 
         this.on("mousedown", function () {
             this.moveToTop();
@@ -26,9 +29,19 @@ class Creation extends Konva.Group {
     show(pos) {
         super.show();
         this.textarea.style.display = 'block';
+        this.textarea.value = "";
         this.x(pos.x);
         this.y(pos.y);
         this.updateTextAreaPos();
+    }
+
+    toggle(pos) {
+        if (this.isVisible() === true) {
+            this.hide();
+        }
+        else {
+            this.show(pos);
+        }
     }
 
     updateTextAreaPos() {
@@ -53,6 +66,7 @@ class Creation extends Konva.Group {
     }
 
     createInput() {
+        var that = this;
         // get the right position for the textarea
         var areaPosition = this.updateTextAreaPos();
 
@@ -81,6 +95,23 @@ class Creation extends Konva.Group {
         if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
             textarea.style.width = this.config.width - 16 + 'px';
         }
+
+        textarea.addEventListener('keyup', function (e) {
+            // hide on enter
+            // but don't hide on shift + enter
+            if (e.keyCode === 13 && !e.shiftKey) {
+                that.hide();
+                that.getLayer().draw();
+            }
+            // on esc do not set value back to node
+            if (e.keyCode === 27) {
+                that.hide();
+                that.getLayer().draw();
+            }
+
+            that.updateList();
+            console.log(e);
+        });
 
         // focus into textare
         textarea.focus();
@@ -116,8 +147,48 @@ class Creation extends Konva.Group {
 
     createList() {
         var that = this;
-        that.config.vbm.logic.blocks.forEach(element => {
 
+        var list = new Konva.Group({
+            x: 5,
+            y: 40,
         });
+
+        var list_clip = new Konva.Group({
+            clip: {
+                x: 0,
+                y: 0,
+                width: that.config.width - 10,
+                height: that.config.height - 45,
+            }
+        });
+        list.add(list_clip);
+
+        var index = 0;
+        that.config.vbm.logic.blocks.forEach(element => {
+            if (element.name.includes(this.textarea.value)) {
+                var text = new Konva.Text({
+                    x: 0,
+                    y: index * 20,
+                    text: element.name,
+                });
+
+                text.on('mousedown', function (evt) {
+                    that.config.vbm.addBlock(element.id, evt.evt.x, evt.evt.y);
+                    that.hide();
+                });
+
+                index += 1;
+                list.add(text);
+            }
+        });
+
+        this.list = list;
+        this.add(list);
+    }
+
+    updateList() {
+        this.list.destroy();
+        this.createList();
+        this.getLayer().draw();
     }
 }
