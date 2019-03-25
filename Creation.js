@@ -11,7 +11,6 @@ class Creation extends Konva.Group {
 
         this.add(this.createBox());
         this.textarea = this.createInput();
-        this.textarea.focus();
 
         this.createList();
 
@@ -30,9 +29,11 @@ class Creation extends Konva.Group {
         super.show();
         this.textarea.style.display = 'block';
         this.textarea.value = "";
+        this.textarea.focus();
         this.x(pos.x);
         this.y(pos.y);
         this.updateTextAreaPos();
+        this.moveToTop();
     }
 
     toggle(pos) {
@@ -75,7 +76,7 @@ class Creation extends Konva.Group {
         document.body.appendChild(textarea);
 
         textarea.value = "";
-        textarea.placeholder = "Add..."
+        textarea.placeholder = "Filter..."
         textarea.style.position = 'absolute';
         textarea.style.top = areaPosition.y + 'px';
         textarea.style.left = areaPosition.x + 'px';
@@ -110,7 +111,6 @@ class Creation extends Konva.Group {
             }
 
             that.updateList();
-            console.log(e);
         });
 
         // focus into textare

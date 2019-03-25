@@ -8,10 +8,8 @@ class Node extends Konva.Group {
         this.config = config;
         this.vbm = config.vbm;
         this.linkObj = null;
+        this.type = this.config.vbm.getConnectionRule(this.config.type);
         var that = this;
-
-        this.config.text = "Test";
-
 
         this.addCircle();
         this.addText();
@@ -30,6 +28,7 @@ class Node extends Konva.Group {
                 start: [that.absolutePosition().x, that.absolutePosition().y],
                 end: [evt.evt.x, evt.evt.y],
                 vbm: that.vbm,
+                color: that.type.color,
             });
             that.vbm.newConnection.linkObjA = that;
             that.vbm.layer.draw();
@@ -53,9 +52,10 @@ class Node extends Konva.Group {
     }
 
     addCircle() {
+        var that = this;
         var circle = new Konva.Circle({
             radius: 7,
-            fill: 'red',
+            fill: that.type.color,
         });
         this.add(circle);
     }
@@ -63,9 +63,9 @@ class Node extends Konva.Group {
     addText() {
         var that = this;
         var text = new Konva.Text({
-            text: that.config.text,
+            text: that.config.name,
             size: 18,
-            x: that.config.io == "input" ? 10 : that.config.text.length * -9,
+            x: that.config.io == "input" ? 10 : that.config.name.length * -9,
             y: -5,
         });
         this.add(text);

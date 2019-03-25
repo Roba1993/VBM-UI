@@ -4,7 +4,7 @@
 class Connection extends Konva.Line {
     constructor(config) {
         super({
-            stroke: 'green',
+            stroke: config.color,
             lineCap: 'round',
             lineJoin: 'round',
             bezier: true,

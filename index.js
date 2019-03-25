@@ -124,6 +124,18 @@ class VBM {
     hideCreationArea() {
         this.creationArea.hide();
     }
+
+    getConnectionRule(type) {
+        var ret = null;
+
+        this.logic.connections.forEach(con => {
+            if(con.type === type) {
+                ret = JSON.parse(JSON.stringify(con));
+            }
+        });
+
+        return ret;
+    }
 }
 
 

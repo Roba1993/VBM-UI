@@ -5,6 +5,11 @@ class Text extends Konva.Text {
         var that = this;
 
         that.on('dblclick', () => {
+            // Only allow if editable
+            if(that.config.editable === false) {
+                return
+            }
+
             // hide text node and transformer:
             that.hide();
             that.config.vbm.layer.draw();

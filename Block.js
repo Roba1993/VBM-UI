@@ -62,26 +62,23 @@ class Block extends Konva.Group {
         var nodes = new Konva.Group();
 
         this.config.inputs.forEach((input, index) => {
-            var node = new Node({
-                width: that.config.width,
-                io: 'input',
-                position: index,
-                vbm: that.config.vbm,
-                block: that,
-            });
+            input.width = that.config.width;
+            input.io = 'input';
+            input.position = index;
+            input.vbm = that.config.vbm;
+            input.block = that;
 
-            nodes.add(node);
+            nodes.add(new Node(input));
         });
 
         this.config.outputs.forEach((input, index) => {
-            var node = new Node({
-                width: that.config.width,
-                io: 'output',
-                position: index,
-                vbm: that.config.vbm,
-            });
+            input.width = that.config.width;
+            input.io = 'output';
+            input.position = index;
+            input.vbm = that.config.vbm;
+            input.block = that;
 
-            nodes.add(node);
+            nodes.add(new Node(input));
         });
 
         return nodes;
@@ -90,11 +87,12 @@ class Block extends Konva.Group {
     createHeader() {
         var that = this;
         var text = new Text({
-            text: "Function",
+            text: that.config.name,
             size: 20,
             x: 7,
             y: 7,
             vbm: that.config.vbm,
+            editable: that.config.nameEdit,
         });
 
         return text;
