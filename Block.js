@@ -14,6 +14,11 @@ class Block extends Konva.Group {
         this.add(this.createBox());
         this.add(this.createHeader());
         this.add(this.nodes);
+
+        this.on("mousedown", function() {
+            this.moveToTop();
+            this.config.vbm.layer.draw();
+        });
     }
 
     createBox() {

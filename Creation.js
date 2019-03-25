@@ -11,6 +11,11 @@ class Creation extends Konva.Group {
 
         this.add(this.createBox());
         this.textarea = this.createInput();
+
+        this.on("mousedown", function () {
+            this.moveToTop();
+            this.config.vbm.layer.draw();
+        });
     }
 
     hide() {
@@ -84,8 +89,8 @@ class Creation extends Konva.Group {
     }
 
     createBox() {
-        var that = this; 
-        
+        var that = this;
+
         // create the main box
         var box = new Konva.Rect({
             width: 300,
@@ -112,7 +117,7 @@ class Creation extends Konva.Group {
     createList() {
         var that = this;
         that.config.vbm.logic.blocks.forEach(element => {
-            
+
         });
     }
 }
