@@ -180,6 +180,33 @@ var logic = {
             description: 'Definition of a static text',
             inputs: [],
             outputs: [{ name: 'Text', nameEdit: true, description: 'The defined static text', type: 'String' }]
+        },
+        {
+            id: 4,
+            name: 'Static Integer',
+            nameEdit: false,
+            description: 'Definition of a static integer',
+            inputs: [],
+            outputs: [{ name: '0', nameEdit: true, description: 'The defined static integer', type: 'Integer' }]
+        },
+        {
+            id: 5,
+            name: 'Addition',
+            nameEdit: false,
+            description: 'Definition of a static integer',
+            inputs: [
+                { name: 'Integer 1', description: 'Input 1 for the calulcation', type: 'Integer' },
+                { name: 'Integer 2', description: 'Input 2 for the calculation', type: 'Integer' }
+            ],
+            outputs: [{ name: 'Result', description: 'The result of the addition', type: 'Integer' }]
+        },
+        {
+            id: 6,
+            name: 'Integer to String',
+            nameEdit: false,
+            description: 'Definition of a static integer',
+            inputs: [{ name: 'Integer', description: 'Interger to convert to String', type: 'Integer' }],
+            outputs: [{ name: 'String', description: 'The Ineteger as String', type: 'String' }]
         }
     ]
 };
