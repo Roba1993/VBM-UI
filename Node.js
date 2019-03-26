@@ -91,6 +91,7 @@ class Node extends Konva.Group {
         var that = this;
 
         var value = new TextBox({
+            text: that.type.valueDefault,
             size: 18,
             y: -5,
             editable: 'click',
@@ -143,12 +144,11 @@ class Node extends Konva.Group {
 
         // when there is a linked object destroy value field
         if (linkObj !== null && this.value !== null) {
-            // remove value field
             this.value.destroy();
             this.value = null;
         }
         // when there is no linked object create value field
-        else if (linkObj === null) {
+        else if (linkObj === null && this.value === null) {
             this.addValue();
         }
     }

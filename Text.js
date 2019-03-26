@@ -144,6 +144,7 @@ class Text extends Konva.Text {
                 e.stopPropagation();
             }
 
+            that.text(textarea.value);
             that.onTextChange(textarea.value);
         });
 

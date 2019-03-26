@@ -187,7 +187,7 @@ var logic = {
     connections: [
         { type: 'Execution', icon: 'circle', color: 'black' },
         { type: 'String', icon: 'circle', color: 'purple' },
-        { type: 'Integer', icon: 'circle', color: 'green', valueEdit: true },
+        { type: 'Integer', icon: 'circle', color: 'green', valueEdit: true, valueDefault: '0' },
         { type: 'Float', icon: 'circle', color: 'green' },
     ],
     blocks: [
