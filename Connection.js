@@ -56,12 +56,12 @@ class Connection extends Konva.Line {
     destroy() {
         // unlink the connection object in link object A
         if (this.linkObjA != null) {
-            this.linkObjA.linkObj = null;
+            this.linkObjA.updateLinkObj(null);
         }
 
         // unlink the connection object in link object B
         if (this.linkObjB != null) {
-            this.linkObjB.linkObj = null;
+            this.linkObjB.updateLinkObj(null);
         }
 
         // call super to destroy
@@ -85,8 +85,8 @@ class Connection extends Konva.Line {
         }
 
         // set this connection as the actual connection for node A&B
-        this.linkObjA.linkObj = this;
-        this.linkObjB.linkObj = this;
+        this.linkObjA.updateLinkObj(this);
+        this.linkObjB.updateLinkObj(this);
 
         // add to the connection list and remove as new connection
         this.config.vbm.newConnection = null;

@@ -134,6 +134,24 @@ class Node extends Konva.Group {
     // has changed and the edit area is closed
     onTextChange(text) {
     };
+
+    // when the link object gets updated,
+    // check if new value fields need to be created
+    updateLinkObj(linkObj) {
+        // set the new status
+        this.linkObj = linkObj;
+
+        // when there is a linked object destroy value field
+        if (linkObj !== null && this.value !== null) {
+            // remove value field
+            this.value.destroy();
+            this.value = null;
+        }
+        // when there is no linked object create value field
+        else if (linkObj === null) {
+            this.addValue();
+        }
+    }
 }
 
 
