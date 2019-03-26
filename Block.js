@@ -16,14 +16,21 @@ class Block extends Konva.Group {
         this.add(this.nodes);
 
         this.on("mousedown", function (evt) {
-            this.moveToTop();
-            // onfocus all blocks when no shift is pressed
-            if (evt.evt.shiftKey == false) {
-                this.config.vbm.unfocusAll();
+            if(!this.focus() && evt.evt.shiftKey === false) {
+                this.config.vbm.focusAll(false);
             }
-            this.focus(true);
+
+            if(this.focus() && evt.evt.shiftKey === true) {
+                this.focus(false);
+            }
+            else {
+                this.focus(true);
+            }
+
+            this.moveToTop();
             this.config.vbm.layer.draw();
         });
+
     }
 
     destroy() {

@@ -30,8 +30,7 @@ class Creation extends Konva.Group {
         this.textarea.style.display = 'block';
         this.textarea.value = "";
         this.textarea.focus();
-        this.x(pos.x);
-        this.y(pos.y);
+        this.absolutePosition(pos);
         this.updateTextAreaPos();
         this.moveToTop();
     }
@@ -173,7 +172,8 @@ class Creation extends Konva.Group {
                 });
 
                 text.on('mousedown', function (evt) {
-                    that.config.vbm.addBlock(element.id, evt.evt.x, evt.evt.y);
+                    var pos = that.absolutePosition();
+                    that.config.vbm.addBlock(element.id, pos.x, pos.y);
                     that.hide();
                 });
 

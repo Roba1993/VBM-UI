@@ -45,7 +45,7 @@ class VBM {
 
             if (evt.target.nodeType == "Stage") {
                 that.hideCreationArea();
-                that.unfocusAll();
+                that.focusAll(false);
             }
         });
 
@@ -77,6 +77,9 @@ class VBM {
         document.addEventListener('keyup', function (e) {
             if (e.keyCode === 46 || e.keyCode === 8) {
                 that.destroyAllSelected();
+            }
+            else if (e.keyCode === 65 && e.ctrlKey === true) {
+                that.focusAll(true);
             }
         });
 
@@ -148,10 +151,10 @@ class VBM {
         return ret;
     }
 
-    unfocusAll() {
+    focusAll(status) {
         this.layer.children.forEach(comp => {
             if (typeof comp.focus === "function") {
-                comp.focus(false);
+                comp.focus(status);
             }
         });
         this.layer.draw();
