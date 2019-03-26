@@ -16,6 +16,8 @@ class Block extends Konva.Group {
         this.add(this.header);
         this.add(this.nodes);
 
+        this.updateBlock();
+
         this.on("mousedown", function (evt) {
             if (!this.focus() && evt.evt.shiftKey === false) {
                 this.config.vbm.focusAll(false);
@@ -55,19 +57,19 @@ class Block extends Konva.Group {
     createBox() {
         var that = this;
 
-        var wh = this.calcHeightAndWidth();
+        /*var wh = this.calcHeightAndWidth();
         var width = wh.widthLeft + 15 + wh.widthRight;
 
-        if(this.header.width() + 14 > width) {
+        if (this.header.width() + 14 > width) {
             width = this.header.width() + 14;
         }
-        this.updateNodePosition(width);
+        this.updateNodePosition(width);*/
 
 
         // create the main box
         var box = new Konva.Rect({
-            width: width,
-            height: wh.height + 5,
+            //width: width,
+            //height: wh.height + 5,
             fill: '#FFD200',
             draggable: true,
             cornerRadius: 5,
@@ -127,7 +129,12 @@ class Block extends Konva.Group {
             input.vbm = that.config.vbm;
             input.block = that;
 
-            nodes.add(new Node(input));
+            var n = new Node(input);
+            n.y(((n.height() + 10) * index) + 30);
+            n.onTextChange = function() {
+                that.updateBlock();
+            }
+            nodes.add(n);
         });
 
         this.config.outputs.forEach((input, index) => {
@@ -138,6 +145,10 @@ class Block extends Konva.Group {
             input.block = that;
 
             var n = new Node(input);
+            n.y(((n.height() + 10) * index) + 30);
+            n.onTextChange = function() {
+                that.updateBlock();
+            }
             nodes.add(n);
         });
 
@@ -166,17 +177,17 @@ class Block extends Konva.Group {
         this.nodes.getChildren().forEach(n => {
             if (n.config.io === 'output') {
                 if (n.text.width() > widthRight) {
-                    widthRight = n.text.width();
+                    widthRight = n.width();
                 }
             }
             else {
                 if (n.text.width() > widthLeft) {
-                    widthLeft = n.text.width();
+                    widthLeft = n.width();
                 }
             }
 
             if (n.y() + n.text.height() > height) {
-                height = n.y() + n.text.height();
+                height = n.y() + n.height();
             }
         });
 
@@ -194,5 +205,34 @@ class Block extends Konva.Group {
                 n.text.x(- n.text.width());
             }
         });
+    }
+
+    updateBlock() {
+        var wh = this.calcHeightAndWidth();
+        var width = wh.widthLeft + 15 + wh.widthRight;
+
+        if (this.header.width() + 14 > width) {
+            width = this.header.width() + 14;
+        }
+
+        // update block size
+        this.width(width);
+        this.height(wh.height + 5);
+
+        // update box size
+        this.box.width(this.width());
+        this.box.height(this.height());
+
+        // update the position of all nodes
+        this.nodes.getChildren().forEach(n => {
+            if (n.config.io === 'output') {
+                n.x(width);
+            }
+        });
+
+        // redraw node
+        if (this.getLayer() !== null) {
+            this.getLayer().draw();
+        }
     }
 }

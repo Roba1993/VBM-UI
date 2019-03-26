@@ -43,7 +43,7 @@ class VBM {
                 that.layer.draw();
             }
 
-            if (evt.target.nodeType == "Stage") {
+            if (evt.target.nodeType == "Stage" && evt.evt.button === 0) {
                 that.hideCreationArea();
                 that.focusAll(false);
             }
@@ -57,6 +57,7 @@ class VBM {
         // context menu opne create
         this.stage.on('contextmenu', function (evt) {
             that.creationArea.toggle({ x: evt.evt.x, y: evt.evt.y });
+            that.focusAll(false);
             that.layer.draw();
             evt.evt.preventDefault();
         });
@@ -186,7 +187,7 @@ var logic = {
     connections: [
         { type: 'Execution', icon: 'circle', color: 'black' },
         { type: 'String', icon: 'circle', color: 'purple' },
-        { type: 'Integer', icon: 'circle', color: 'green' },
+        { type: 'Integer', icon: 'circle', color: 'green', valueEdit: true },
         { type: 'Float', icon: 'circle', color: 'green' },
     ],
     blocks: [

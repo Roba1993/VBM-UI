@@ -30,6 +30,7 @@ class Creation extends Konva.Group {
         this.textarea.style.display = 'block';
         this.textarea.value = "";
         this.textarea.focus();
+        this.updateList();
         this.absolutePosition(pos);
         this.updateTextAreaPos();
         this.moveToTop();

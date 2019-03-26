@@ -12,6 +12,9 @@ class Node extends Konva.Group {
 
         this.addCircle();
         this.addText();
+        this.addValue();
+
+        this.updateSize();
 
         // on entering we want to see the move mouse
         this.on('mouseover', function () {
@@ -40,7 +43,7 @@ class Node extends Konva.Group {
             }
 
             // Only Input to Output mapping allowed
-            if(that.vbm.newConnection.linkObjA.config.io == evt.target.parent.config.io) {
+            if (that.vbm.newConnection.linkObjA.config.io == evt.target.parent.config.io) {
                 return;
             }
 
@@ -73,11 +76,64 @@ class Node extends Konva.Group {
             vbm: that.config.vbm,
         });
 
-        that.config.io == "output" ? text.x(-text.width()): text.x() ;
-        
+        that.config.io == "output" ? text.x(-text.width()) : text.x();
+
         this.text = text;
         this.add(text);
     }
+
+    addValue() {
+        if (this.type.valueEdit !== true) {
+            this.value = null;
+            return;
+        }
+
+        var that = this;
+
+        var value = new TextBox({
+            size: 18,
+            y: -5,
+            editable: 'click',
+            fill: "white",
+            minWidth: 20,
+            minHeight: 10,
+        })
+
+        value.onTextChange = function (text) {
+            that.updateSize();
+            that.onTextChange(text);
+        }
+
+        that.config.io == "output" ? value.x(-that.text.width() - value.width() - 5) : value.x(that.text.width() + 5);
+        that.value = value;
+        that.add(value);
+    }
+
+    updateSize() {
+        // update value position
+        if (this.type.valueEdit === true && this.config.io == "output") {
+            this.value.x(-this.text.width() - this.value.width() - 5);
+        }
+        else if (this.type.valueEdit === true) {
+            this.value.x(this.text.width() + 5);
+        }
+
+        var valueWidth = this.value === null ? 0 : this.value.width();
+
+        // update the node size
+        this.height(this.text.height());
+        this.width(this.text.width() + 5 + valueWidth);
+
+        // redraw node
+        if (this.getLayer() !== null) {
+            this.getLayer().draw();
+        }
+    }
+
+    // Function which gets called when the text
+    // has changed and the edit area is closed
+    onTextChange(text) {
+    };
 }
 
 
