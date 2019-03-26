@@ -42,6 +42,11 @@ class VBM {
                 that.newConnection = null;
                 that.layer.draw();
             }
+
+            if (evt.target.nodeType == "Stage") {
+                that.hideCreationArea();
+                that.unfocusAll();
+            }
         });
 
         // update on drag end
@@ -51,7 +56,7 @@ class VBM {
 
         // context menu opne create
         this.stage.on('contextmenu', function (evt) {
-            that.creationArea.toggle({x: evt.evt.x, y: evt.evt.y});
+            that.creationArea.toggle({ x: evt.evt.x, y: evt.evt.y });
             that.layer.draw();
             evt.evt.preventDefault();
         });
@@ -67,6 +72,12 @@ class VBM {
                 x: pos.x,
                 y: pos.y
             };
+        });
+
+        document.addEventListener('keyup', function (e) {
+            if (e.keyCode === 46 || e.keyCode === 8) {
+                that.destroyAllSelected();
+            }
         });
 
         // update newConnection position is requried
@@ -102,7 +113,7 @@ class VBM {
     addBlock(id, x, y) {
         var that = this;
         this.logic.blocks.forEach(block => {
-            if(block.id == id) {
+            if (block.id == id) {
                 var b = JSON.parse(JSON.stringify(block));
                 b.vbm = that;
                 b.x = x;
@@ -129,12 +140,33 @@ class VBM {
         var ret = null;
 
         this.logic.connections.forEach(con => {
-            if(con.type === type) {
+            if (con.type === type) {
                 ret = JSON.parse(JSON.stringify(con));
             }
         });
 
         return ret;
+    }
+
+    unfocusAll() {
+        this.layer.children.forEach(comp => {
+            if (typeof comp.focus === "function") {
+                comp.focus(false);
+            }
+        });
+        this.layer.draw();
+    }
+
+    destroyAllSelected() {
+        var remove = this.layer.getChildren(child => {
+            return (typeof child.focus === "function" && child.focus() === true);
+        });
+
+        remove.forEach(comp => {
+            comp.destroy();
+        });
+
+        this.layer.draw();
     }
 }
 

@@ -11,14 +11,37 @@ class Block extends Konva.Group {
 
         this.nodes = this.createNodes();
 
-        this.add(this.createBox());
+        this.createBox();
         this.add(this.createHeader());
         this.add(this.nodes);
 
-        this.on("mousedown", function() {
+        this.on("mousedown", function (evt) {
             this.moveToTop();
+            // onfocus all blocks when no shift is pressed
+            if (evt.evt.shiftKey == false) {
+                this.config.vbm.unfocusAll();
+            }
+            this.focus(true);
             this.config.vbm.layer.draw();
         });
+    }
+
+    destroy() {
+        this.nodes.children.forEach(node => {
+            if (node.linkObj != null) {
+                node.linkObj.destroy();
+            }
+        });
+
+        super.destroy();
+    }
+
+    focus(status) {
+        if (status === false || status === true) {
+            this.box.strokeEnabled(status);
+        }
+
+        return this.box.strokeEnabled();
     }
 
     createBox() {
@@ -30,18 +53,35 @@ class Block extends Konva.Group {
             height: that.config.width,
             fill: '#FFD200',
             draggable: true,
-            cornerRadius: 5
+            cornerRadius: 5,
+            stroke: "orange",
         });
 
-        // on dragging move also the complete Block 
-        box.dragBoundFunc(function (pos) {
-            that.absolutePosition(pos);
-            that.config.vbm.redrawConnections();
-
+        // on do nothing we handle dragging wihtin drag move
+        box.dragBoundFunc(function () {
             return {
-                x: pos.x,
-                y: pos.y
-            };
+                x: that.absolutePosition().x,
+                y: that.absolutePosition().y,
+            }
+        });
+
+        // on drag 
+        box.on('dragmove', function (evt) {
+            // get all selected blocks
+            var move = that.config.vbm.layer.getChildren(child => {
+                return (typeof child.focus === "function" && child.focus() === true);
+            });
+
+            // move all selected box
+            move.forEach(comp => {
+                var pos = comp.absolutePosition();
+                pos.x += evt.evt.movementX;
+                pos.y += evt.evt.movementY;
+                comp.absolutePosition(pos);
+            });
+
+            // update all connections
+            that.config.vbm.redrawConnections();
         });
 
         // on entering we want to see the move mouse
@@ -54,7 +94,9 @@ class Block extends Konva.Group {
             document.body.style.cursor = 'crosshair';
         });
 
-        return box;
+        this.box = box;
+        this.focus(false);
+        this.add(box);
     }
 
     createNodes() {
