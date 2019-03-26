@@ -1,7 +1,6 @@
 class Node extends Konva.Group {
     constructor(config) {
         super({
-            x: config.io == "input" ? 0 : config.width,
             y: config.position * 25 + 30,
         });
 
@@ -57,17 +56,26 @@ class Node extends Konva.Group {
             radius: 7,
             fill: that.type.color,
         });
+
+        this.icon = circle;
         this.add(circle);
     }
 
     addText() {
         var that = this;
-        var text = new Konva.Text({
-            text: that.config.name,
+
+        var text = new Text({
+            text: that.config.io == "input" ? "   " + that.config.name : that.config.name + "   ",
             size: 18,
-            x: that.config.io == "input" ? 10 : that.config.name.length * -9,
+            x: 0,
             y: -5,
+            editable: that.config.nameEdit,
+            vbm: that.config.vbm,
         });
+
+        that.config.io == "output" ? text.x(-text.width()): text.x() ;
+        
+        this.text = text;
         this.add(text);
     }
 }

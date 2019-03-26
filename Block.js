@@ -10,17 +10,18 @@ class Block extends Konva.Group {
         this.config.height = 250;
 
         this.nodes = this.createNodes();
+        this.header = this.createHeader();
 
         this.createBox();
-        this.add(this.createHeader());
+        this.add(this.header);
         this.add(this.nodes);
 
         this.on("mousedown", function (evt) {
-            if(!this.focus() && evt.evt.shiftKey === false) {
+            if (!this.focus() && evt.evt.shiftKey === false) {
                 this.config.vbm.focusAll(false);
             }
 
-            if(this.focus() && evt.evt.shiftKey === true) {
+            if (this.focus() && evt.evt.shiftKey === true) {
                 this.focus(false);
             }
             else {
@@ -54,10 +55,19 @@ class Block extends Konva.Group {
     createBox() {
         var that = this;
 
+        var wh = this.calcHeightAndWidth();
+        var width = wh.widthLeft + 15 + wh.widthRight;
+
+        if(this.header.width() + 14 > width) {
+            width = this.header.width() + 14;
+        }
+        this.updateNodePosition(width);
+
+
         // create the main box
         var box = new Konva.Rect({
-            width: that.config.width,
-            height: that.config.width,
+            width: width,
+            height: wh.height + 5,
             fill: '#FFD200',
             draggable: true,
             cornerRadius: 5,
@@ -127,7 +137,8 @@ class Block extends Konva.Group {
             input.vbm = that.config.vbm;
             input.block = that;
 
-            nodes.add(new Node(input));
+            var n = new Node(input);
+            nodes.add(n);
         });
 
         return nodes;
@@ -145,5 +156,43 @@ class Block extends Konva.Group {
         });
 
         return text;
+    }
+
+    calcHeightAndWidth() {
+        var height = 0;
+        var widthLeft = 0;
+        var widthRight = 0;
+
+        this.nodes.getChildren().forEach(n => {
+            if (n.config.io === 'output') {
+                if (n.text.width() > widthRight) {
+                    widthRight = n.text.width();
+                }
+            }
+            else {
+                if (n.text.width() > widthLeft) {
+                    widthLeft = n.text.width();
+                }
+            }
+
+            if (n.y() + n.text.height() > height) {
+                height = n.y() + n.text.height();
+            }
+        });
+
+        return {
+            height: height,
+            widthLeft: widthLeft,
+            widthRight: widthRight,
+        }
+    }
+
+    updateNodePosition(width) {
+        this.nodes.getChildren().forEach(n => {
+            if (n.config.io === 'output') {
+                n.x(width);
+                n.text.x(- n.text.width());
+            }
+        });
     }
 }

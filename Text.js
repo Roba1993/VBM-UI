@@ -6,7 +6,7 @@ class Text extends Konva.Text {
 
         that.on('dblclick', () => {
             // Only allow if editable
-            if(that.config.editable === false) {
+            if (that.config.editable !== true) {
                 return
             }
 
@@ -125,8 +125,7 @@ class Text extends Konva.Text {
                 var scale = that.getAbsoluteScale().x;
                 setTextareaWidth(that.width() * scale);
                 textarea.style.height = 'auto';
-                textarea.style.height =
-                    textarea.scrollHeight + that.fontSize() + 'px';
+                textarea.style.height = textarea.scrollHeight + that.fontSize() + 'px';
             });
 
             function handleOutsideClick(e) {
