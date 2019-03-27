@@ -1,3 +1,6 @@
+/**
+ * Creation dialog to filter and add new blocks
+ */
 class Creation extends Konva.Group {
     constructor(config) {
         super({
@@ -18,11 +21,19 @@ class Creation extends Konva.Group {
         });
     }
 
+    /**
+     * Hide the creation dialog
+     */
     hide() {
         super.hide();
         this.textarea.style.display = 'none';
     }
 
+    /**
+     * Show the creation dialog at the givin position.
+     * 
+     * @param {Position to show the create dialog} pos 
+     */
     show(pos) {
         super.show();
         this.textarea.style.display = 'block';
@@ -34,6 +45,11 @@ class Creation extends Konva.Group {
         this.moveToTop();
     }
 
+    /**
+     * Toggle the visibility of the create dialog
+     * 
+     * @param {Position to show the create dialog} pos 
+     */
     toggle(pos) {
         if (this.isVisible() === true) {
             this.hide();
@@ -43,6 +59,9 @@ class Creation extends Konva.Group {
         }
     }
 
+    /**
+     * The textare need to be updated manually, becuase it's an html textare ontop of the canvas
+     */
     updateTextAreaPos() {
         // then lets find position of stage container on the page:
         var stageBox = this.config.vbm.stage.container().getBoundingClientRect();
@@ -64,6 +83,9 @@ class Creation extends Konva.Group {
         return areaPosition;
     }
 
+    /**
+     * Create the textarea
+     */
     createInput() {
         var that = this;
         // get the right position for the textarea
@@ -117,6 +139,9 @@ class Creation extends Konva.Group {
         return textarea;
     }
 
+    /**
+     * Create the background box for the creation dialog
+     */
     createBox() {
         var that = this;
 
@@ -143,6 +168,9 @@ class Creation extends Konva.Group {
         return box;
     }
 
+    /**
+     * Create the list of entries of the creation dialog
+     */
     createList() {
         var that = this;
 
@@ -185,6 +213,9 @@ class Creation extends Konva.Group {
         this.add(list);
     }
 
+    /**
+     * Update the list of entries
+     */
     updateList() {
         this.list.destroy();
         this.createList();

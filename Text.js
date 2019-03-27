@@ -1,3 +1,6 @@
+/**
+ * Text which can be clicked and edit 
+ */
 class Text extends Konva.Text {
     constructor(config) {
         super(config);
@@ -13,10 +16,16 @@ class Text extends Konva.Text {
         });
     }
 
-    // Function which gets called when the text
-    // has changed and the edit area is closed
+    /**
+     * Function which gets called when the text has changed and the edit area is closed.
+     * 
+     * @param {The changed text} text 
+     */
     onTextChange(text) { return text; };
 
+    /**
+     * Create a editable textfield ontop of the normal one
+     */
     createEditTextarea() {
         var that = this;
 

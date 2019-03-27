@@ -1,8 +1,6 @@
 class Node extends Konva.Group {
     constructor(config) {
-        super({
-            y: config.position * 25 + 30,
-        });
+        super();
 
         this.config = config;
         this.vbm = config.vbm;
@@ -21,6 +19,7 @@ class Node extends Konva.Group {
             document.body.style.cursor = 'crosshair';
         });
 
+        // on mouse down create a new connection if possiblt
         this.on('mousedown', function (evt) {
             if (that.vbm.newConnection != null) {
                 return;
@@ -36,6 +35,7 @@ class Node extends Konva.Group {
             that.vbm.layer.draw();
         });
 
+        // on mouse up try to complete the new connection between two nodes
         this.on('mouseup', function (evt) {
             // check if new connection is still null
             if(that.vbm.newConnection === null) {
@@ -63,6 +63,9 @@ class Node extends Konva.Group {
         });
     }
 
+    /**
+     * Add the circle for the node
+     */
     addCircle() {
         var that = this;
 
@@ -78,6 +81,9 @@ class Node extends Konva.Group {
         this.add(circle);
     }
 
+    /**
+     * Add the text for the node
+     */
     addText() {
         var that = this;
 
@@ -94,6 +100,9 @@ class Node extends Konva.Group {
         this.add(text);
     }
 
+    /**
+     * Add the value textbox for the node
+     */
     addValue() {
         if (this.type.valueEdit !== true) {
             this.value = null;
@@ -112,9 +121,11 @@ class Node extends Konva.Group {
             cornerRadius: 3,
         })
 
+        // register own event handler when the textbox changes
         value.onTextChange = function (text) {
             that.updateSize();
 
+            // execute the evaluation rule for this kind of connection type
             if (typeof that.type.valueCheck === "function") {
                 text = that.type.valueCheck(text);
             }
@@ -127,6 +138,9 @@ class Node extends Konva.Group {
         that.add(value);
     }
 
+    /**
+     * Update the size of the node based upon the changes happend within
+     */
     updateSize() {
         // update value position
         if (this.type.valueEdit === true && this.config.io == "output") {
@@ -154,8 +168,12 @@ class Node extends Konva.Group {
         return text;
     };
 
-    // when the link object gets updated,
-    // check if new value fields need to be created
+    /**
+     * When the link object gets updated, check if new value fields need to be created.
+     * Also updates if the circle if filled or not.
+     * 
+     * @param {The new link object to be set} linkObj 
+     */
     updateLinkObj(linkObj) {
         // set the new status
         this.linkObj = linkObj;

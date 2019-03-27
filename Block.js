@@ -6,8 +6,6 @@ class Block extends Konva.Group {
         });
 
         this.config = config;
-
-
         this.headerText = this.createHeaderText();
         this.nodes = this.createNodes();
 
@@ -17,6 +15,7 @@ class Block extends Konva.Group {
 
         this.updateBlock();
 
+        // in mouse down set the right focus
         this.on("mousedown", function (evt) {
             if (!this.focus() && evt.evt.shiftKey === false) {
                 this.config.vbm.focusAll(false);
@@ -35,6 +34,9 @@ class Block extends Konva.Group {
 
     }
 
+    /**
+     * Destroys this block and the connection belonging to it.
+     */
     destroy() {
         this.nodes.children.forEach(node => {
             if (node.linkObj != null) {
@@ -45,6 +47,11 @@ class Block extends Konva.Group {
         super.destroy();
     }
 
+    /**
+     * This function can either set or return the focus state
+     * 
+     * @param {New focus status true/false} status 
+     */
     focus(status) {
         if (status === false || status === true) {
             this.box.strokeEnabled(status);
@@ -53,6 +60,9 @@ class Block extends Konva.Group {
         return this.box.strokeEnabled();
     }
 
+    /**
+     * Create the background box
+     */
     createBox() {
         var that = this;
 
@@ -105,50 +115,56 @@ class Block extends Konva.Group {
         this.add(box);
     }
 
+    /**
+     * Create all the nodes within this box
+     */
     createNodes() {
         var that = this;
-        var headerHeight = (this.headerText.height() + (this.config.logic.style.blockHeaderMargin * 2));
         var nodes = new Konva.Group();
 
+        // create the input nodes
         this.config.inputs.forEach((input, index) => {
-            input.width = that.config.width;
-            input.io = 'input';
-            input.position = index;
-            input.vbm = that.config.vbm;
-            input.block = that;
-            input.rules = that.config.logic.rules;
-            input.style = that.config.logic.style;
-
-            var n = new Node(input);
-            n.y(((n.height() + this.config.logic.style.blockNodeSpacing) * index) + headerHeight + this.config.logic.style.blockNodeSpacing);
-            n.onTextChange = function (text) {
-                that.updateBlock();
-                return text;
-            }
-            nodes.add(n);
+            nodes.add(that.createNode(input, index, 'input'));
         });
 
+        // create the output nodes
         this.config.outputs.forEach((input, index) => {
-            input.width = that.config.width;
-            input.io = 'output';
-            input.position = index;
-            input.vbm = that.config.vbm;
-            input.block = that;
-            input.rules = that.config.logic.rules;
-            input.style = that.config.logic.style;
-
-            var n = new Node(input);
-            n.y(((n.height() + this.config.logic.style.blockNodeSpacing) * index) + headerHeight + this.config.logic.style.blockNodeSpacing);
-            n.onTextChange = function (text) {
-                that.updateBlock();
-                return text;
-            }
-            nodes.add(n);
+            nodes.add(that.createNode(input, index, 'output'));
         });
 
         return nodes;
     }
 
+    /**
+     * Creates a single node
+     * 
+     * @param {Either Input or Output node} io 
+     */
+    createNode(input, index, io) {
+        var that = this;
+        var headerHeight = (this.headerText.height() + (this.config.logic.style.blockHeaderMargin * 2));
+
+        input.width = that.config.width;
+        input.io = io;
+        input.position = index;
+        input.vbm = that.config.vbm;
+        input.block = that;
+        input.rules = that.config.logic.rules;
+        input.style = that.config.logic.style;
+
+        var n = new Node(input);
+        n.y(((n.height() + this.config.logic.style.blockNodeSpacing) * index) + headerHeight + this.config.logic.style.blockNodeSpacing);
+        n.onTextChange = function (text) {
+            that.updateBlock();
+            return text;
+        }
+
+        return n;
+    }
+
+    /**
+     * Create the header text and make it moveable
+     */
     createHeaderText() {
         var that = this;
         var text = new Text({
@@ -202,6 +218,9 @@ class Block extends Konva.Group {
         return text;
     }
 
+    /**
+     * Calculate the height and and width of the nodes
+     */
     calcHeightAndWidth() {
         var height = 0;
         var widthLeft = 0;
@@ -231,6 +250,11 @@ class Block extends Konva.Group {
         }
     }
 
+    /**
+     * Update the position of all output nodes, when the width of the box has changed
+     * 
+     * @param {Width of the box and align the nodes towards} width 
+     */
     updateNodePosition(width) {
         this.nodes.getChildren().forEach(n => {
             if (n.config.io === 'output') {
@@ -240,6 +264,9 @@ class Block extends Konva.Group {
         });
     }
 
+    /**
+     * This function gets executed to update the block settings whenever somethink is changing within
+     */
     updateBlock() {
         var wh = this.calcHeightAndWidth();
         var width = wh.widthLeft + 15 + wh.widthRight;

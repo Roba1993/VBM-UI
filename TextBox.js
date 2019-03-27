@@ -1,3 +1,6 @@
+/**
+ * The textbox provides a editable textbox which has minimum size
+ */
 class TextBox extends Konva.Group {
     constructor(config) {
         super({
@@ -8,6 +11,7 @@ class TextBox extends Konva.Group {
         this.config = config;
         var that = this;
 
+        // Create the text field
         var textfield = new Text({
             fontFamily: config.fontFamily,
             fontSize: config.fontSize,
@@ -22,9 +26,11 @@ class TextBox extends Konva.Group {
             wrap: config.wrap,
             ellipsi: config.ellipsi,
             editable: config.editable,
+            y: 1,
         });
         this.textfield = textfield;
 
+        // Create the background rect
         var box = new Konva.Rect({
             fill: config.fill,
             cornerRadius: config.cornerRadius,
@@ -34,6 +40,7 @@ class TextBox extends Konva.Group {
         });
         this.box = box;
 
+        // Register a own text change handler for the textbox
         textfield.onTextChange = function (text) {
             that.text = text;
             that.updateSize();
@@ -53,6 +60,9 @@ class TextBox extends Konva.Group {
         this.updateSize();
     }
 
+    /**
+     * Recalculate the size of the textbox to adopt to text changes
+     */
     updateSize() {
         // get the textfield size and ensure that we get min sizes
         var width = this.textfield.width() > this.config.minWidth ? this.textfield.width() : this.config.minWidth;
@@ -72,8 +82,11 @@ class TextBox extends Konva.Group {
         }
     }
 
-    // Function which gets called when the text
-    // has changed and the edit area is closed
+    /**
+     * Function which gets called when the text has changed and the edit area is closed.
+     * 
+     * @param {The changed text} text 
+     */
     onTextChange(text) { return text; };
 }
 

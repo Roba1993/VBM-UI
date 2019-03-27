@@ -1,7 +1,12 @@
 /**
- * Connector class to connect two data points
+ * Connector class to connect two nodes
  */
 class Connection extends Konva.Line {
+    /**
+     * Connection object to combine two nodes.
+     * 
+     * @param {Defines the configuration for the connection} config 
+     */
     constructor(config) {
         super({
             stroke: config.color,
@@ -53,6 +58,9 @@ class Connection extends Konva.Line {
 
     }
 
+    /**
+     * Unregisters himself at the nodes and destroys himself
+     */
     destroy() {
         // unlink the connection object in link object B
         // if a full connection is available
@@ -73,6 +81,12 @@ class Connection extends Konva.Line {
         super.destroy();
     }
 
+    /**
+     * The activate function unregisters and destroys the old connection for a node
+     * and registers himself within both nodes it's connected to.
+     * 
+     * @param {Pixel offset for the Y-Axes for the connection} offsetY 
+     */
     activate(offsetY) {
         // Both linkObjects need to be set
         if (this.linkObjA == null || this.linkObjA == null) {
