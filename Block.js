@@ -128,6 +128,7 @@ class Block extends Konva.Group {
             input.position = index;
             input.vbm = that.config.vbm;
             input.block = that;
+            input.rules = that.config.logic.rules;
 
             var n = new Node(input);
             n.y(((n.height() + 10) * index) + 30);
@@ -143,6 +144,7 @@ class Block extends Konva.Group {
             input.position = index;
             input.vbm = that.config.vbm;
             input.block = that;
+            input.rules = that.config.logic.rules;
 
             var n = new Node(input);
             n.y(((n.height() + 10) * index) + 30);

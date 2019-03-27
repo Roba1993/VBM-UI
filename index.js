@@ -122,6 +122,7 @@ class VBM {
                 b.vbm = that;
                 b.x = x;
                 b.y = y;
+                b.logic = JSON.parse(JSON.stringify(that.logic));
                 this.layer.add(new Block(b));
                 this.layer.draw();
                 return true;

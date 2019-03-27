@@ -37,13 +37,18 @@ class Node extends Konva.Group {
         });
 
         this.on('mouseup', function (evt) {
-            // No links to own block
-            if (that.vbm.newConnection.linkObjA.config.block == that.config.block) {
+            // No links to own block when rule is set
+            if (this.config.rules.strictDifferentBlock == true && that.vbm.newConnection.linkObjA.config.block == that.config.block) {
                 return;
             }
 
-            // Only Input to Output mapping allowed
-            if (that.vbm.newConnection.linkObjA.config.io == evt.target.parent.config.io) {
+            // Only Input to Output mapping allowed when rule is set
+            if (this.config.rules.strictInputOutput == true && that.vbm.newConnection.linkObjA.config.io == evt.target.parent.config.io) {
+                return;
+            }
+
+            // Only same type of nodes allowed when rule is set
+            if (this.config.rules.strictConnections == true && that.vbm.newConnection.linkObjA.type.type !== evt.target.parent.type.type) {
                 return;
             }
 
@@ -55,9 +60,12 @@ class Node extends Konva.Group {
 
     addCircle() {
         var that = this;
+
         var circle = new Konva.Circle({
-            radius: 7,
-            fill: that.type.color,
+            fill: 'transparent',
+            radius: 6,
+            stroke: that.type.color,
+            strokeWidth: 3
         });
 
         this.icon = circle;
@@ -142,14 +150,27 @@ class Node extends Konva.Group {
         // set the new status
         this.linkObj = linkObj;
 
-        // when there is a linked object destroy value field
-        if (linkObj !== null && this.value !== null) {
-            this.value.destroy();
-            this.value = null;
+        // when there is a linked object 
+        if (linkObj !== null) {
+            if (this.value !== null) {
+                //destroy value field
+                this.value.destroy();
+                this.value = null;
+            }
+
+            // set icon as filled circle
+            this.icon.fill(this.type.color);
         }
-        // when there is no linked object create value field
-        else if (linkObj === null && this.value === null) {
-            this.addValue();
+        // when there is no linked object 
+        else if (linkObj === null) {
+            if (this.value === null) {
+                // create value field
+                this.addValue();
+            }
+
+            // set icon as not filled circle
+            this.icon.fill('transparent');
+            this.icon.stroke('none')
         }
     }
 }
