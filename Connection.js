@@ -26,7 +26,7 @@ class Connection extends Konva.Line {
      */
     setPosition(posA, posB) {
         var pa = this.config.vbm.stage.absolutePosition();
-        this.points(Connection.calculateBezier(posA[0] - pa.x, posA[1] - pa.y, posB[0]- pa.x, posB[1] - pa.y));
+        this.points(Connection.calculateBezier(posA[0] - pa.x, posA[1] - pa.y, posB[0] - pa.x, posB[1] - pa.y));
     }
 
     /**
@@ -54,14 +54,19 @@ class Connection extends Konva.Line {
     }
 
     destroy() {
-        // unlink the connection object in link object A
-        if (this.linkObjA != null) {
-            this.linkObjA.updateLinkObj(null);
-        }
-
         // unlink the connection object in link object B
-        if (this.linkObjB != null) {
+        // if a full connection is available
+        if (this.linkObjB !== null) {
             this.linkObjB.updateLinkObj(null);
+
+            // unlink the connection object in link object A
+            if (this.linkObjA !== null) {
+                this.linkObjA.updateLinkObj(null);
+            }
+        }
+        // for a half connection just set the linkObjA to null
+        else {
+            this.linkObjA = null;
         }
 
         // call super to destroy

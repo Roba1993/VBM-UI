@@ -147,6 +147,7 @@ class VBM {
         this.logic.connections.forEach(con => {
             if (con.type === type) {
                 ret = JSON.parse(JSON.stringify(con));
+                ret.valueCheck = con.valueCheck;
             }
         });
 
@@ -187,9 +188,9 @@ var logic = {
     },
     connections: [
         { type: 'Execution', icon: 'circle', color: 'black' },
-        { type: 'String', icon: 'circle', color: 'purple' },
-        { type: 'Integer', icon: 'circle', color: 'green', valueEdit: true, valueDefault: '0' },
-        { type: 'Float', icon: 'circle', color: 'green' },
+        { type: 'String', icon: 'circle', color: 'purple', valueEdit: true, valueDefault: 'Text', },
+        { type: 'Integer', icon: 'circle', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^\d]/g, ''); } },
+        { type: 'Float', icon: 'circle', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/(\d+\.?\d+)/g, ''); } },
     ],
     blocks: [
         {
@@ -228,7 +229,7 @@ var logic = {
         },
         {
             id: 5,
-            name: 'Addition',
+            name: 'Addition Integer',
             nameEdit: false,
             description: 'Definition of a static integer',
             inputs: [
@@ -244,7 +245,26 @@ var logic = {
             description: 'Definition of a static integer',
             inputs: [{ name: 'Integer', description: 'Interger to convert to String', type: 'Integer' }],
             outputs: [{ name: 'String', description: 'The Ineteger as String', type: 'String' }]
-        }
+        },
+        {
+            id: 7,
+            name: 'Addition Float',
+            nameEdit: false,
+            description: 'Definition of a static integer',
+            inputs: [
+                { name: 'Float 1', description: 'Input 1 for the calulcation', type: 'Float' },
+                { name: 'Float 2', description: 'Input 2 for the calculation', type: 'Float' }
+            ],
+            outputs: [{ name: 'Result', description: 'The result of the addition', type: 'Float' }]
+        },
+        {
+            id: 8,
+            name: 'Float to String',
+            nameEdit: false,
+            description: 'Definition of a static integer',
+            inputs: [{ name: 'Float', description: 'Interger to convert to String', type: 'Float' }],
+            outputs: [{ name: 'String', description: 'The Ineteger as String', type: 'String' }]
+        },
     ]
 };
 

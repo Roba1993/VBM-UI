@@ -15,7 +15,7 @@ class Text extends Konva.Text {
 
     // Function which gets called when the text
     // has changed and the edit area is closed
-    onTextChange(text) { };
+    onTextChange(text) { return text; };
 
     createEditTextarea() {
         var that = this;
@@ -89,6 +89,8 @@ class Text extends Konva.Text {
         textarea.focus();
         textarea.select();
 
+        that.textarea = textarea;
+
         function removeTextarea() {
             textarea.parentNode.removeChild(textarea);
             window.removeEventListener('click', handleOutsideClick);
@@ -124,9 +126,8 @@ class Text extends Konva.Text {
             // hide on enter
             // but don't hide on shift + enter
             if (e.keyCode === 13 && !e.shiftKey) {
-                that.text(textarea.value);
+                that.text(that.onTextChange(textarea.value));
                 removeTextarea();
-                that.onTextChange(that.text);
             }
             // on esc do not set value back to node
             if (e.keyCode === 27) {
@@ -144,15 +145,14 @@ class Text extends Konva.Text {
                 e.stopPropagation();
             }
 
-            that.text(textarea.value);
-            that.onTextChange(textarea.value);
+            that.textarea.value = that.onTextChange(that.textarea.value);
+            that.text(that.textarea.value);
         });
 
         function handleOutsideClick(e) {
             if (e.target !== textarea) {
-                that.text(textarea.value);
+                that.text(that.onTextChange(textarea.value));
                 removeTextarea();
-                that.onTextChange(that.text);
             }
         }
         setTimeout(() => {

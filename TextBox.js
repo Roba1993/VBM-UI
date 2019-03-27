@@ -36,7 +36,7 @@ class TextBox extends Konva.Group {
         textfield.onTextChange = function (text) {
             that.text = text;
             that.updateSize();
-            that.onTextChange(text);
+            return that.onTextChange(text);
         }
 
         box.on('dblclick click', () => {
@@ -73,7 +73,7 @@ class TextBox extends Konva.Group {
 
     // Function which gets called when the text
     // has changed and the edit area is closed
-    onTextChange(text) { };
+    onTextChange(text) { return text; };
 }
 
 

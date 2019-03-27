@@ -110,7 +110,12 @@ class Node extends Konva.Group {
 
         value.onTextChange = function (text) {
             that.updateSize();
-            that.onTextChange(text);
+
+            if (typeof that.type.valueCheck === "function") {
+                text = that.type.valueCheck(text);
+            }
+
+            return that.onTextChange(text)
         }
 
         that.config.io == "output" ? value.x(-that.text.width() - value.width() - 5) : value.x(that.text.width() + 5);
@@ -142,6 +147,7 @@ class Node extends Konva.Group {
     // Function which gets called when the text
     // has changed and the edit area is closed
     onTextChange(text) {
+        return text;
     };
 
     // when the link object gets updated,
@@ -162,7 +168,7 @@ class Node extends Konva.Group {
             this.icon.fill(this.type.color);
         }
         // when there is no linked object 
-        else if (linkObj === null) {
+        else {
             if (this.value === null) {
                 // create value field
                 this.addValue();
@@ -170,7 +176,6 @@ class Node extends Konva.Group {
 
             // set icon as not filled circle
             this.icon.fill('transparent');
-            this.icon.stroke('none')
         }
     }
 }

@@ -132,8 +132,9 @@ class Block extends Konva.Group {
 
             var n = new Node(input);
             n.y(((n.height() + 10) * index) + 30);
-            n.onTextChange = function() {
+            n.onTextChange = function(text) {
                 that.updateBlock();
+                return text;
             }
             nodes.add(n);
         });
@@ -148,8 +149,9 @@ class Block extends Konva.Group {
 
             var n = new Node(input);
             n.y(((n.height() + 10) * index) + 30);
-            n.onTextChange = function() {
+            n.onTextChange = function(text) {
                 that.updateBlock();
+                return text;
             }
             nodes.add(n);
         });
