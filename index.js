@@ -96,8 +96,7 @@ class VBM {
         // define the creation dialog
         this.creationArea = new Creation({
             vbm: that,
-            x: 100,
-            y: 100
+            logic: JSON.parse(JSON.stringify(that.logic)),
         });
         this.layer.add(this.creationArea);
         this.creationArea.hide();
@@ -108,8 +107,10 @@ class VBM {
     }
 
     redrawConnections() {
+        var that = this;
+
         this.conGroup.children.forEach(con => {
-            con.updatePosition();
+            con.updatePosition(that.logic.style.blockNodeTextSize / 2);
         });
         this.layer.draw();
     }
@@ -123,6 +124,7 @@ class VBM {
                 b.x = x;
                 b.y = y;
                 b.logic = JSON.parse(JSON.stringify(that.logic));
+
                 this.layer.add(new Block(b));
                 this.layer.draw();
                 return true;
@@ -184,13 +186,36 @@ var logic = {
         strictConnections: true     // Only allows to link matching types
     },
     style: {
-        background: '#EEEEEE',
+        // Block Header style definition
+        blockHeaderMargin: 5,
+        blockHeaderTextSize: 20,
+        blockHeaderTextColor: '#FFFFFF',
+        blockHeaderStartColor: '#7777f7DD',
+        blockHeaderEndColor: '#7777f7DD',
+
+        // Block style definition
+        blockCornerRadius: 10,
+        blockStartColor: '#000000DD',
+        blockEndColor: '#000000DD',
+        blockBorderColor: 'orange',
+        blockNodeSpacing: 10,
+        blockNodeTextSize: 16,
+        blockNodeValueBackground: 'white',
+
+        // Creation Dialog style definition
+        creationWidth: 250,
+        creationHeight: 350,
+        creationColor: '#7777f7DD',
+        creationTextSize: 16,
+        creationTextSpacing: 4,
+        creationCornerRadius: 10,
+        creationFilterTextSize: 20,
     },
     connections: [
-        { type: 'Execution', icon: 'circle', color: 'black' },
-        { type: 'String', icon: 'circle', color: 'purple', valueEdit: true, valueDefault: 'Text', },
-        { type: 'Integer', icon: 'circle', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^\d]/g, ''); } },
-        { type: 'Float', icon: 'circle', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/(\d+\.?\d+)/g, ''); } },
+        { type: 'Execution', color: 'black' },
+        { type: 'String', color: 'purple', valueEdit: true, valueDefault: 'Text', },
+        { type: 'Integer', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^\d]/g, ''); } },
+        { type: 'Float', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^(\d+\.?\d+)]/g, ''); } },
     ],
     blocks: [
         {

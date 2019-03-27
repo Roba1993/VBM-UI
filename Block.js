@@ -6,14 +6,13 @@ class Block extends Konva.Group {
         });
 
         this.config = config;
-        this.config.width = 100;
-        this.config.height = 250;
 
+
+        this.headerText = this.createHeaderText();
         this.nodes = this.createNodes();
-        this.header = this.createHeader();
 
         this.createBox();
-        this.add(this.header);
+        this.add(this.headerText);
         this.add(this.nodes);
 
         this.updateBlock();
@@ -57,23 +56,11 @@ class Block extends Konva.Group {
     createBox() {
         var that = this;
 
-        /*var wh = this.calcHeightAndWidth();
-        var width = wh.widthLeft + 15 + wh.widthRight;
-
-        if (this.header.width() + 14 > width) {
-            width = this.header.width() + 14;
-        }
-        this.updateNodePosition(width);*/
-
-
         // create the main box
         var box = new Konva.Rect({
-            //width: width,
-            //height: wh.height + 5,
-            fill: '#FFD200',
             draggable: true,
-            cornerRadius: 5,
-            stroke: "orange",
+            cornerRadius: that.config.logic.style.blockCornerRadius,
+            stroke: that.config.logic.style.blockBorderColor,
         });
 
         // on do nothing we handle dragging wihtin drag move
@@ -120,6 +107,7 @@ class Block extends Konva.Group {
 
     createNodes() {
         var that = this;
+        var headerHeight = (this.headerText.height() + (this.config.logic.style.blockHeaderMargin * 2));
         var nodes = new Konva.Group();
 
         this.config.inputs.forEach((input, index) => {
@@ -129,10 +117,11 @@ class Block extends Konva.Group {
             input.vbm = that.config.vbm;
             input.block = that;
             input.rules = that.config.logic.rules;
+            input.style = that.config.logic.style;
 
             var n = new Node(input);
-            n.y(((n.height() + 10) * index) + 30);
-            n.onTextChange = function(text) {
+            n.y(((n.height() + this.config.logic.style.blockNodeSpacing) * index) + headerHeight + this.config.logic.style.blockNodeSpacing);
+            n.onTextChange = function (text) {
                 that.updateBlock();
                 return text;
             }
@@ -146,10 +135,11 @@ class Block extends Konva.Group {
             input.vbm = that.config.vbm;
             input.block = that;
             input.rules = that.config.logic.rules;
+            input.style = that.config.logic.style;
 
             var n = new Node(input);
-            n.y(((n.height() + 10) * index) + 30);
-            n.onTextChange = function(text) {
+            n.y(((n.height() + this.config.logic.style.blockNodeSpacing) * index) + headerHeight + this.config.logic.style.blockNodeSpacing);
+            n.onTextChange = function (text) {
                 that.updateBlock();
                 return text;
             }
@@ -159,15 +149,54 @@ class Block extends Konva.Group {
         return nodes;
     }
 
-    createHeader() {
+    createHeaderText() {
         var that = this;
         var text = new Text({
             text: that.config.name,
-            size: 20,
-            x: 7,
-            y: 7,
+            fontSize: that.config.logic.style.blockHeaderTextSize,
+            x: that.config.logic.style.blockHeaderMargin,
+            y: that.config.logic.style.blockHeaderMargin,
             vbm: that.config.vbm,
             editable: that.config.nameEdit,
+            fill: that.config.logic.style.blockHeaderTextColor,
+            draggable: true,
+        });
+
+        // on entering we want to see the move mouse
+        text.on('mouseover', function () {
+            document.body.style.cursor = 'move';
+        });
+
+        // On leaving the set back the crosshair mouse
+        text.on('mouseout', function () {
+            document.body.style.cursor = 'crosshair';
+        });
+
+        // on drag 
+        text.on('dragmove', function (evt) {
+            // get all selected blocks
+            var move = that.config.vbm.layer.getChildren(child => {
+                return (typeof child.focus === "function" && child.focus() === true);
+            });
+
+            // move all selected box
+            move.forEach(comp => {
+                var pos = comp.absolutePosition();
+                pos.x += evt.evt.movementX;
+                pos.y += evt.evt.movementY;
+                comp.absolutePosition(pos);
+            });
+
+            // update all connections
+            that.config.vbm.redrawConnections();
+        });
+
+        // on do nothing we handle dragging wihtin drag move
+        text.dragBoundFunc(function () {
+            return {
+                x: that.absolutePosition().x + that.config.logic.style.blockHeaderMargin,
+                y: that.absolutePosition().y + that.config.logic.style.blockHeaderMargin,
+            }
         });
 
         return text;
@@ -215,17 +244,28 @@ class Block extends Konva.Group {
         var wh = this.calcHeightAndWidth();
         var width = wh.widthLeft + 15 + wh.widthRight;
 
-        if (this.header.width() + 14 > width) {
-            width = this.header.width() + 14;
+        if (this.headerText.width() + (this.config.logic.style.blockHeaderMargin * 2) > width) {
+            width = this.headerText.width() + (this.config.logic.style.blockHeaderMargin * 2);
         }
 
         // update block size
         this.width(width);
-        this.height(wh.height + 5);
+        this.height(wh.height + this.config.logic.style.blockNodeSpacing);
 
         // update box size
         this.box.width(this.width());
         this.box.height(this.height());
+
+        // gradient color of the box
+        var headerYColorPos = ((this.headerText.height() + (this.config.logic.style.blockHeaderMargin * 2)) / this.height());
+        this.box.fillLinearGradientStartPoint({ y: 0 });
+        this.box.fillLinearGradientEndPoint({ y: this.height() });
+        this.box.fillLinearGradientColorStops([
+            0, this.config.logic.style.blockStartColor,
+            headerYColorPos, this.config.logic.style.blockEndColor,
+            headerYColorPos + 0.0001, this.config.logic.style.blockHeaderStartColor,
+            1, this.config.logic.style.blockHeaderEndColor,
+        ]);
 
         // update the position of all nodes
         this.nodes.getChildren().forEach(n => {

@@ -44,11 +44,11 @@ class Connection extends Konva.Line {
     /**
      * Updates the connection start and end position automatically.
      */
-    updatePosition() {
+    updatePosition(offsetY) {
         if (this.linkObjA != null && this.linkObjB != null) {
             this.setPosition(
-                [this.linkObjA.absolutePosition().x, this.linkObjA.absolutePosition().y],
-                [this.linkObjB.absolutePosition().x, this.linkObjB.absolutePosition().y]);
+                [this.linkObjA.absolutePosition().x, this.linkObjA.absolutePosition().y + offsetY],
+                [this.linkObjB.absolutePosition().x, this.linkObjB.absolutePosition().y + offsetY]);
         }
 
     }
@@ -73,7 +73,7 @@ class Connection extends Konva.Line {
         super.destroy();
     }
 
-    activate() {
+    activate(offsetY) {
         // Both linkObjects need to be set
         if (this.linkObjA == null || this.linkObjA == null) {
             return;
@@ -97,7 +97,7 @@ class Connection extends Konva.Line {
         this.config.vbm.newConnection = null;
 
         // update the position
-        this.updatePosition();
+        this.updatePosition(offsetY);
         this.config.vbm.layer.draw();
     }
 

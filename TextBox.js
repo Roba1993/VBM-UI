@@ -30,6 +30,7 @@ class TextBox extends Konva.Group {
             cornerRadius: config.cornerRadius,
             stroke: config.stroke,
             y: -1,
+            x: -3,
         });
         this.box = box;
 
@@ -58,7 +59,7 @@ class TextBox extends Konva.Group {
         var height = this.textfield.height() > this.config.minHeight ? this.textfield.height() : this.config.minHeight;
 
         // update the box size based upon the text size
-        this.box.width(width);
+        this.box.width(width + 6);
         this.box.height(height);
 
         // update group size based upon the box size

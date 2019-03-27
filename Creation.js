@@ -6,8 +6,6 @@ class Creation extends Konva.Group {
         });
 
         this.config = config;
-        this.config.width = 300;
-        this.config.height = 500;
 
         this.add(this.createBox());
         this.textarea = this.createInput();
@@ -80,9 +78,9 @@ class Creation extends Konva.Group {
         textarea.style.position = 'absolute';
         textarea.style.top = areaPosition.y + 'px';
         textarea.style.left = areaPosition.x + 'px';
-        textarea.style.width = this.config.width - 15 + 'px';
-        textarea.style.height = 22 + 'px';
-        textarea.style.fontSize = 20 + 'px';
+        textarea.style.width = that.config.logic.style.creationWidth - 15 + 'px';
+        textarea.style.height = (that.config.logic.style.creationFilterTextSize + 2) + 'px';
+        textarea.style.fontSize = that.config.logic.style.creationFilterTextSize + 'px';
         textarea.style.border = 'none';
         textarea.style.padding = '0px';
         textarea.style.margin = '0px';
@@ -94,7 +92,7 @@ class Creation extends Konva.Group {
 
         // on firefox different width
         if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-            textarea.style.width = this.config.width - 16 + 'px';
+            textarea.style.width = that.config.logic.style.creationWidth - 16 + 'px';
         }
 
         textarea.addEventListener('keyup', function (e) {
@@ -124,11 +122,11 @@ class Creation extends Konva.Group {
 
         // create the main box
         var box = new Konva.Rect({
-            width: 300,
-            height: 500,
-            fill: '#FFD200',
+            width: that.config.logic.style.creationWidth,
+            height: that.config.logic.style.creationHeight,
+            fill: that.config.logic.style.creationColor,
+            cornerRadius: that.config.logic.style.creationCornerRadius,
             draggable: true,
-            cornerRadius: 5
         });
 
         // on dragging move also the complete Block 
@@ -149,7 +147,7 @@ class Creation extends Konva.Group {
         var that = this;
 
         var list = new Konva.Group({
-            x: 5,
+            x: 10,
             y: 40,
         });
 
@@ -157,8 +155,8 @@ class Creation extends Konva.Group {
             clip: {
                 x: 0,
                 y: 0,
-                width: that.config.width - 10,
-                height: that.config.height - 45,
+                width: that.config.logic.style.creationWidth - 10,
+                height: that.config.logic.style.creationWidth - 45,
             }
         });
         list.add(list_clip);
@@ -167,9 +165,9 @@ class Creation extends Konva.Group {
         that.config.vbm.logic.blocks.forEach(element => {
             if (element.name.includes(this.textarea.value)) {
                 var text = new Konva.Text({
-                    x: 0,
-                    y: index * 20,
+                    y: index * (that.config.logic.style.creationTextSize + that.config.logic.style.creationTextSpacing),
                     text: element.name,
+                    fontSize: that.config.logic.style.creationTextSize,
                 });
 
                 text.on('mousedown', function (evt) {

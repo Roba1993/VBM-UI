@@ -27,7 +27,7 @@ class Node extends Konva.Group {
             }
 
             that.vbm.newConnection = new Connection({
-                start: [that.absolutePosition().x, that.absolutePosition().y],
+                start: [that.absolutePosition().x, that.absolutePosition().y + that.config.style.blockNodeTextSize / 2],
                 end: [evt.evt.x, evt.evt.y],
                 vbm: that.vbm,
                 color: that.type.color,
@@ -37,6 +37,11 @@ class Node extends Konva.Group {
         });
 
         this.on('mouseup', function (evt) {
+            // check if new connection is still null
+            if(that.vbm.newConnection === null) {
+                return;
+            }
+
             // No links to own block when rule is set
             if (this.config.rules.strictDifferentBlock == true && that.vbm.newConnection.linkObjA.config.block == that.config.block) {
                 return;
@@ -54,7 +59,7 @@ class Node extends Konva.Group {
 
             // connect the nodes together
             that.vbm.newConnection.linkObjB = evt.target.parent;
-            that.vbm.newConnection.activate();
+            that.vbm.newConnection.activate(that.config.style.blockNodeTextSize / 2);
         });
     }
 
@@ -63,9 +68,10 @@ class Node extends Konva.Group {
 
         var circle = new Konva.Circle({
             fill: 'transparent',
-            radius: 6,
+            radius: that.config.style.blockNodeTextSize / 2,
             stroke: that.type.color,
-            strokeWidth: 3
+            strokeWidth: 3,
+            y: that.config.style.blockNodeTextSize / 2,
         });
 
         this.icon = circle;
@@ -77,9 +83,7 @@ class Node extends Konva.Group {
 
         var text = new Text({
             text: that.config.io == "input" ? "   " + that.config.name : that.config.name + "   ",
-            size: 18,
-            x: 0,
-            y: -5,
+            fontSize: that.config.style.blockNodeTextSize,
             editable: that.config.nameEdit,
             vbm: that.config.vbm,
         });
@@ -100,12 +104,12 @@ class Node extends Konva.Group {
 
         var value = new TextBox({
             text: that.type.valueDefault,
-            size: 18,
-            y: -5,
+            fontSize: that.config.style.blockNodeTextSize,
             editable: 'click',
-            fill: "white",
+            fill: that.config.style.blockNodeValueBackground,
             minWidth: 20,
             minHeight: 10,
+            cornerRadius: 3,
         })
 
         value.onTextChange = function (text) {
