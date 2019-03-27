@@ -1,3 +1,8 @@
+import Konva from 'konva';
+import Block from './Block';
+import Creation from './Creation';
+
+
 class VBM {
     constructor(element, logic) {
         this.logic = logic;

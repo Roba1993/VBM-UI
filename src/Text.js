@@ -1,7 +1,9 @@
+import Konva from 'konva';
+
 /**
  * Text which can be clicked and edit 
  */
-class Text extends Konva.Text {
+export default class Text extends Konva.Text {
     constructor(config) {
         super(config);
         this.config = config;

@@ -1,4 +1,8 @@
-class Block extends Konva.Group {
+import Konva from 'konva';
+import Node from './Node';
+import Text from './Text';
+
+export default class Block extends Konva.Group {
     constructor(config) {
         super({
             x: config.x,

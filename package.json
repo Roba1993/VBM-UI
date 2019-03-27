@@ -1,0 +1,28 @@
+{
+  "name": "vbm-ui",
+  "version": "1.0.0",
+  "description": "Visual Business Modelling UI",
+  "private": true,
+  "author": "Robert Schütte",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roba1993/VBM-UI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Roba1993/VBM-UI/issues"
+  },
+  "homepage": "https://github.com/Roba1993/VBM-UI#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -d",
+    "watch": "webpack --watch -p"
+  },
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  },
+  "dependencies": {
+    "konva": "^3.2.3"
+  }
+}

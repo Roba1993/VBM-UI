@@ -1,7 +1,10 @@
+import Konva from 'konva';
+import Text from './Text';
+
 /**
  * The textbox provides a editable textbox which has minimum size
  */
-class TextBox extends Konva.Group {
+export default class TextBox extends Konva.Group {
     constructor(config) {
         super({
             x: config.x,

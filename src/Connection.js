@@ -1,7 +1,10 @@
+import Konva from 'konva';
+
+
 /**
  * Connector class to connect two nodes
  */
-class Connection extends Konva.Line {
+export default class Connection extends Konva.Line {
     /**
      * Connection object to combine two nodes.
      * 

@@ -1,4 +1,9 @@
-class Node extends Konva.Group {
+import Konva from 'konva';
+import Text from './Text';
+import TextBox from './TextBox';
+import Connection from './Connection';
+
+export default class Node extends Konva.Group {
     constructor(config) {
         super();
 

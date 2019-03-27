@@ -1,7 +1,9 @@
+import Konva from 'konva';
+
 /**
  * Creation dialog to filter and add new blocks
  */
-class Creation extends Konva.Group {
+export default class Creation extends Konva.Group {
     constructor(config) {
         super({
             x: config.x,
