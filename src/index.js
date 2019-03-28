@@ -8,6 +8,7 @@ import combineDefaultLogic from './Config';
 class VBM {
     constructor(element, logic) {
         this.logic = combineDefaultLogic(logic);
+        this.blockIdCounter = 0;
         var that = this;
 
 
@@ -88,6 +89,9 @@ class VBM {
             }
             else if (e.keyCode === 65 && e.ctrlKey === true) {
                 that.focusAll(true);
+            }
+            else if (e.keyCode === 120) {
+                console.log(that.getBusinesModel());
             }
         });
 
@@ -182,6 +186,22 @@ class VBM {
         });
 
         this.layer.draw();
+    }
+
+    getBusinesModel() {
+        var blocks = [];
+
+        this.layer.getChildren().forEach(block => {
+            if(block.type === 'Block') {
+                blocks.push(block.getBlockInfo());
+            }
+        });
+
+        return blocks;
+    }
+
+    getNewBlockId() {
+        return this.blockIdCounter++;
     }
 }
 

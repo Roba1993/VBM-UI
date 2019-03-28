@@ -10,6 +10,8 @@ export default class Block extends Konva.Group {
         });
 
         this.config = config;
+        this.type = 'Block';
+        this.id(this.config.vbm.getNewBlockId());
         this.headerText = this.createHeaderText();
         this.nodes = this.createNodes();
 
@@ -309,5 +311,29 @@ export default class Block extends Konva.Group {
         if (this.getLayer() !== null) {
             this.getLayer().draw();
         }
+    }
+
+    getBlockInfo() {
+        var inp = [];
+        var out = [];
+
+        this.nodes.getChildren().forEach(node => {
+            var nodeInfo = node.getNodeInfo();
+
+            if(nodeInfo.nodeType === "output") {
+                out.push(nodeInfo);
+            }
+            else {
+                inp.push(nodeInfo);
+            }
+        })
+
+        return {
+            blockId: this.id(),
+            blockTypeId: this.config.id,
+            position: this.absolutePosition(),
+            inputs: inp,
+            outputs: out,
+        };
     }
 }

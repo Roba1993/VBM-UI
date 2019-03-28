@@ -43,7 +43,7 @@ export default class Node extends Konva.Group {
         // on mouse up try to complete the new connection between two nodes
         this.on('mouseup', function (evt) {
             // check if new connection is still null
-            if(that.vbm.newConnection === null) {
+            if (that.vbm.newConnection === null) {
                 return;
             }
 
@@ -203,6 +203,26 @@ export default class Node extends Konva.Group {
 
             // set icon as not filled circle
             this.icon.fill('transparent');
+        }
+    }
+
+    getNodeInfo() {
+        if (this.linkObj === null) {
+            return {
+                blockId: null,
+                blockTypeId: null,
+                connectionType: this.type.type,
+                value: (this.value !== null) ? this.value.text : null,
+                nodeType: this.config.io,
+            }
+        }
+
+        return {
+            blockId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.getParent().getParent().id() : this.linkObj.linkObjA.getParent().getParent().id(),
+            blockTypeId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.config.block.config.id : this.linkObj.linkObjA.config.block.config.id,
+            connectionType: this.type.type,
+            value: (this.value !== null) ? this.value.text : null,
+            nodeType: this.config.io,
         }
     }
 }
