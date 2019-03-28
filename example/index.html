@@ -144,7 +144,9 @@
         var vbm = new VBM('container', logic);
         vbm.addBlock(1, 50, 50);
 
-        vbm.getBusinesModel();
+        vbm.setBusinesModel(JSON.parse(`
+        [{"blockId":1,"blockTypeId":2,"position":{"x":1040,"y":160},"inputs":[{"blockId":0,"blockTypeId":1,"connectionType":"Execution","value":null,"nodeType":"input"},{"blockId":2,"blockTypeId":8,"connectionType":"String","value":null,"nodeType":"input"}],"outputs":[{"blockId":null,"blockTypeId":null,"connectionType":"Execution","value":null,"nodeType":"output"}]},{"blockId":0,"blockTypeId":1,"position":{"x":658,"y":154},"inputs":[],"outputs":[{"blockId":1,"blockTypeId":2,"connectionType":"Execution","value":null,"nodeType":"output"}]},{"blockId":2,"blockTypeId":8,"position":{"x":702,"y":256},"inputs":[{"blockId":null,"blockTypeId":null,"connectionType":"Float","value":"0","nodeType":"input"}],"outputs":[{"blockId":1,"blockTypeId":2,"connectionType":"String","value":null,"nodeType":"output"}]}]
+        `));
     </script>
 </body>
 

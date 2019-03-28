@@ -92,6 +92,7 @@ class VBM {
             }
             else if (e.keyCode === 120) {
                 console.log(that.getBusinesModel());
+                console.log(JSON.stringify(that.getBusinesModel()));
             }
         });
 
@@ -126,11 +127,12 @@ class VBM {
         this.layer.draw();
     }
 
-    addBlock(id, x, y) {
+    addBlock(blockIid, x, y, uid) {
         var that = this;
         this.logic.blocks.forEach(block => {
-            if (block.id == id) {
+            if (block.id == blockIid) {
                 var b = JSON.parse(JSON.stringify(block));
+                b.uid = uid;
                 b.vbm = that;
                 b.x = x;
                 b.y = y;
@@ -192,7 +194,7 @@ class VBM {
         var blocks = [];
 
         this.layer.getChildren().forEach(block => {
-            if(block.type === 'Block') {
+            if (block.type === 'Block') {
                 blocks.push(block.getBlockInfo());
             }
         });
@@ -202,6 +204,16 @@ class VBM {
 
     getNewBlockId() {
         return this.blockIdCounter++;
+    }
+
+    setBusinesModel(blocks) {
+        console.log(blocks);
+
+        var that = this;
+
+        blocks.forEach(block => {
+            that.addBlock(block.blockTypeId, block.position.x, block.position.y, block.Id);
+        });
     }
 }
 
