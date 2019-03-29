@@ -11,7 +11,7 @@ export default class Block extends Konva.Group {
 
         this.config = config;
         this.type = 'Block';
-        (this.config.uid === undefined) ? this.id(this.config.vbm.getNewBlockId()) : this.id(this.config.uid);
+        (this.config.uid === undefined) ? this.id(this.config.vbm.getNewId()) : this.id(this.config.uid);
 
         this.headerText = this.createHeaderText();
         this.nodes = this.createNodes();

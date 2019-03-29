@@ -8,7 +8,7 @@ import combineDefaultLogic from './Config';
 class VBM {
     constructor(element, logic) {
         this.logic = combineDefaultLogic(logic);
-        this.blockIdCounter = 0;
+        this.idCounter = 0;
         var that = this;
 
 
@@ -202,8 +202,8 @@ class VBM {
         return blocks;
     }
 
-    getNewBlockId() {
-        return this.blockIdCounter++;
+    getNewId() {
+        return this.idCounter++;
     }
 
     setBusinesModel(blocks) {
