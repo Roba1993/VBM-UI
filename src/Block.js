@@ -129,6 +129,12 @@ export default class Block extends Konva.Group {
         var that = this;
         var nodes = new Konva.Group();
 
+
+        var headerHeight = (this.headerText.height() + (this.config.logic.style.blockHeaderMargin * 2));
+        var inputIndex = 0;
+        var outputIndex = 0;
+
+        /*
         // create the input nodes
         this.config.inputs.forEach((input, index) => {
             nodes.add(that.createNode(input, index, 'input'));
@@ -138,6 +144,27 @@ export default class Block extends Konva.Group {
         this.config.outputs.forEach((input, index) => {
             nodes.add(that.createNode(input, index, 'output'));
         });
+        */
+        this.config.nodes.forEach(input => {
+            var index = (input.io === 'input') ? inputIndex++ : outputIndex++;
+
+            input.width = that.config.width;
+            input.position = index;
+            input.vbm = that.config.vbm;
+            input.block = that;
+            input.rules = that.config.logic.rules;
+            input.style = that.config.logic.style;
+
+            var n = new Node(input);
+            n.y(((n.height() + this.config.logic.style.blockNodeSpacing) * index) + headerHeight + this.config.logic.style.blockNodeSpacing);
+            n.onTextChange = function (text) {
+                that.updateBlock();
+                return text;
+            }
+
+            nodes.add(n);
+        });
+
 
         return nodes;
     }
@@ -315,26 +342,17 @@ export default class Block extends Konva.Group {
     }
 
     getBlockInfo() {
-        var inp = [];
-        var out = [];
+        var nodes = [];
 
         this.nodes.getChildren().forEach(node => {
-            var nodeInfo = node.getNodeInfo();
-
-            if(nodeInfo.nodeType === "output") {
-                out.push(nodeInfo);
-            }
-            else {
-                inp.push(nodeInfo);
-            }
+            nodes.push(node.getNodeInfo());
         })
 
         return {
             blockId: this.id(),
             blockTypeId: this.config.id,
             position: this.absolutePosition(),
-            inputs: inp,
-            outputs: out,
+            nodes: nodes,
         };
     }
 }

@@ -209,20 +209,24 @@ export default class Node extends Konva.Group {
     getNodeInfo() {
         if (this.linkObj === null) {
             return {
-                blockId: null,
-                blockTypeId: null,
+                id: this.config.id,
+                nodeType: this.config.io,
                 connectionType: this.type.type,
                 value: (this.value !== null) ? this.value.text : null,
-                nodeType: this.config.io,
+                connectedBlockId: null,
+                connectedBlockTypeId: null,
+                connectedNodeId: null,
             }
         }
 
         return {
-            blockId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.getParent().getParent().id() : this.linkObj.linkObjA.getParent().getParent().id(),
-            blockTypeId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.config.block.config.id : this.linkObj.linkObjA.config.block.config.id,
+            id: this.config.id,
+            nodeType: this.config.io,
             connectionType: this.type.type,
             value: (this.value !== null) ? this.value.text : null,
-            nodeType: this.config.io,
+            connectedBlockId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.getParent().getParent().id() : this.linkObj.linkObjA.getParent().getParent().id(),
+            connectedBlockTypeId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.config.block.config.id : this.linkObj.linkObjA.config.block.config.id,
+            connectedNodeId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.config.id : this.linkObj.linkObjA.config.id,
         }
     }
 }

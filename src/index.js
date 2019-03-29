@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import Block from './Block';
 import Creation from './Creation';
+import Connection from './Connection';
 
 import combineDefaultLogic from './Config';
 
@@ -203,17 +204,83 @@ class VBM {
     }
 
     getNewId() {
-        return this.idCounter++;
+        return ++this.idCounter;
     }
 
-    setBusinesModel(blocks) {
-        console.log(blocks);
-
-        var that = this;
-
-        blocks.forEach(block => {
-            that.addBlock(block.blockTypeId, block.position.x, block.position.y, block.Id);
+    clear() {
+        // clear sheet
+        this.conGroup.destroyChildren();
+        this.layer.getChildren().forEach(block => {
+            if (block.type === 'Block') {
+                block.destroy();
+            }
         });
+
+        this.idCounter = 0;
+    }
+
+    setBusinesModel(blocksConfig) {
+        var that = this;
+        this.clear();
+
+        // Create the single blocks
+        blocksConfig.forEach(block => {
+            that.addBlock(block.blockTypeId, block.position.x, block.position.y, block.blockId);
+            that.idCounter = (block.blockId > that.idCounter) ? block.blockId : that.idCounter;
+        });
+
+        // Create the connection between the new created blocks
+        this.layer.getChildren().forEach(block => {
+            if (block.type === 'Block') {
+                // get the block from the configuration to know it to be state
+                var blockConfig = blocksConfig.find(b => { return b.blockId === block.id(); });
+
+                // loop over all nodes of the existing block
+                block.nodes.getChildren().forEach(node => {
+                    // only input nodes are handled (outputs get generated automatically)
+                    if (node.config.io === "input") {
+                        // get the right node configuration for this node of the already created block
+                        var nodeConfig = blockConfig.nodes.find(n => { return n.id === node.config.id });
+
+                        // we need to have connected block and node
+                        if (nodeConfig.connectedBlockId !== null || nodeConfig.connectedNodeId !== null) {
+                            // create a new connection
+                            var newConnection = new Connection({
+                                start: [0, 0],
+                                end: [0, 0],
+                                vbm: that,
+                                color: that.getConnectionRule(nodeConfig.connectionType).color,
+                            });
+                            newConnection.linkObjA = node;
+                            newConnection.linkObjB = that.getNode(nodeConfig.connectedBlockId, nodeConfig.connectedNodeId);
+
+                            // add connection and activate it
+                            that.conGroup.add(newConnection);
+                            newConnection.activate(node.config.style.blockNodeTextSize / 2);
+                        }
+
+
+                    }
+                })
+
+
+            }
+        });
+    }
+
+    getNode(blockId, nodeId) {
+        var ret = null;
+
+        // loop over all blocks
+        this.layer.getChildren().forEach(block => {
+            // search for the right block id
+            if (block.type === 'Block' && block.id() === blockId) {
+                var nodes = block.nodes.getChildren().filter(n => { return (n.config !== undefined) });
+                ret = nodes.find(r => { return r.config.id === nodeId });
+            }
+        });
+
+        return ret;
     }
 }
 

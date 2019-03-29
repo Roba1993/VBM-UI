@@ -71,7 +71,8 @@
                     nameEdit: false,
                     description: 'Startpoint for the logic',
                     inputs: [],
-                    outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }]
+                    outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
+                    nodes: [{ id: 1, io: 'output', name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
                 },
                 {
                     id: 2,
@@ -81,7 +82,12 @@
                     inputs: [
                         { name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
                         { name: 'Text', description: 'The text to log', type: 'String' }],
-                    outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }]
+                    outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
+                    nodes: [
+                        { id: 1, io: 'input', name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
+                        { id: 2, io: 'output', name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' },
+                        { id: 3, io: 'input', name: 'Text', description: 'The text to log', type: 'String' }
+                    ]
                 },
                 {
                     id: 3,
@@ -145,7 +151,7 @@
         vbm.addBlock(1, 50, 50);
 
         vbm.setBusinesModel(JSON.parse(`
-        [{"blockId":1,"blockTypeId":2,"position":{"x":1040,"y":160},"inputs":[{"blockId":0,"blockTypeId":1,"connectionType":"Execution","value":null,"nodeType":"input"},{"blockId":2,"blockTypeId":8,"connectionType":"String","value":null,"nodeType":"input"}],"outputs":[{"blockId":null,"blockTypeId":null,"connectionType":"Execution","value":null,"nodeType":"output"}]},{"blockId":0,"blockTypeId":1,"position":{"x":658,"y":154},"inputs":[],"outputs":[{"blockId":1,"blockTypeId":2,"connectionType":"Execution","value":null,"nodeType":"output"}]},{"blockId":2,"blockTypeId":8,"position":{"x":702,"y":256},"inputs":[{"blockId":null,"blockTypeId":null,"connectionType":"Float","value":"0","nodeType":"input"}],"outputs":[{"blockId":1,"blockTypeId":2,"connectionType":"String","value":null,"nodeType":"output"}]}]
+        [{"blockId":5,"blockTypeId":1,"position":{"x":764,"y":265},"nodes":[{"id":1,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":6,"connectedBlockTypeId":2,"connectedNodeId":1}]},{"blockId":6,"blockTypeId":2,"position":{"x":953,"y":254},"nodes":[{"id":1,"nodeType":"input","connectionType":"Execution","value":null,"connectedBlockId":5,"connectedBlockTypeId":1,"connectedNodeId":1},{"id":2,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":7,"connectedBlockTypeId":2,"connectedNodeId":1},{"id":3,"nodeType":"input","connectionType":"String","value":"Text","connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null}]},{"blockId":7,"blockTypeId":2,"position":{"x":1216,"y":229},"nodes":[{"id":1,"nodeType":"input","connectionType":"Execution","value":null,"connectedBlockId":6,"connectedBlockTypeId":2,"connectedNodeId":2},{"id":2,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null},{"id":3,"nodeType":"input","connectionType":"String","value":"Text","connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null}]},{"blockId":8,"blockTypeId":1,"position":{"x":886,"y":431},"nodes":[{"id":1,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null}]},{"blockId":10,"blockTypeId":2,"position":{"x":1103,"y":464},"nodes":[{"id":1,"nodeType":"input","connectionType":"Execution","value":null,"connectedBlockId":9,"connectedBlockTypeId":1,"connectedNodeId":1},{"id":2,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null},{"id":3,"nodeType":"input","connectionType":"String","value":"Text","connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null}]},{"blockId":9,"blockTypeId":1,"position":{"x":920,"y":530},"nodes":[{"id":1,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":10,"connectedBlockTypeId":2,"connectedNodeId":1}]}]
         `));
     </script>
 </body>

@@ -122,6 +122,12 @@ export default function combineDefaultLogic(logic) {
     var connections = (logic.connections === undefined) ? defaultLogic.connections : logic.connections;
     var blocks = (logic.blocks === undefined) ? defaultLogic.blocks : logic.blocks;
 
+    blocks.forEach(block => {
+        if(block.nodes === undefined) {
+            block.nodes = [];
+        }
+    });
+
     return {
         rules: rules,
         style: style,
