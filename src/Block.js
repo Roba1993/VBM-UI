@@ -134,17 +134,6 @@ export default class Block extends Konva.Group {
         var inputIndex = 0;
         var outputIndex = 0;
 
-        /*
-        // create the input nodes
-        this.config.inputs.forEach((input, index) => {
-            nodes.add(that.createNode(input, index, 'input'));
-        });
-
-        // create the output nodes
-        this.config.outputs.forEach((input, index) => {
-            nodes.add(that.createNode(input, index, 'output'));
-        });
-        */
         this.config.nodes.forEach(input => {
             var index = (input.io === 'input') ? inputIndex++ : outputIndex++;
 

@@ -43,7 +43,8 @@ var defaultLogic = {
             nameEdit: false,
             description: 'Startpoint for the logic',
             inputs: [],
-            outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }]
+            outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
+            nodes: [{ id: 1, io: 'output', name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
         },
         {
             id: 2,
@@ -53,61 +54,22 @@ var defaultLogic = {
             inputs: [
                 { name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
                 { name: 'Text', description: 'The text to log', type: 'String' }],
-            outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }]
+            outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
+            nodes: [
+                { id: 1, io: 'input', name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
+                { id: 2, io: 'output', name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' },
+                { id: 3, io: 'input', name: 'Text', description: 'The text to log', type: 'String' }
+            ]
         },
         {
             id: 3,
-            name: 'Static Text',
+            name: 'String',
             nameEdit: false,
-            description: 'Definition of a static text',
-            inputs: [],
-            outputs: [{ name: 'Text', nameEdit: true, description: 'The defined static text', type: 'String' }]
-        },
-        {
-            id: 4,
-            name: 'Static Integer',
-            nameEdit: false,
-            description: 'Definition of a static integer',
-            inputs: [],
-            outputs: [{ name: '0', nameEdit: true, description: 'The defined static integer', type: 'Integer' }]
-        },
-        {
-            id: 5,
-            name: 'Addition Integer',
-            nameEdit: false,
-            description: 'Definition of a static integer',
-            inputs: [
-                { name: 'Integer 1', description: 'Input 1 for the calulcation', type: 'Integer' },
-                { name: 'Integer 2', description: 'Input 2 for the calculation', type: 'Integer' }
-            ],
-            outputs: [{ name: 'Result', description: 'The result of the addition', type: 'Integer' }]
-        },
-        {
-            id: 6,
-            name: 'Integer to String',
-            nameEdit: false,
-            description: 'Definition of a static integer',
-            inputs: [{ name: 'Integer', description: 'Interger to convert to String', type: 'Integer' }],
-            outputs: [{ name: 'String', description: 'The Ineteger as String', type: 'String' }]
-        },
-        {
-            id: 7,
-            name: 'Addition Float',
-            nameEdit: false,
-            description: 'Definition of a static integer',
-            inputs: [
-                { name: 'Float 1', description: 'Input 1 for the calulcation', type: 'Float' },
-                { name: 'Float 2', description: 'Input 2 for the calculation', type: 'Float' }
-            ],
-            outputs: [{ name: 'Result', description: 'The result of the addition', type: 'Float' }]
-        },
-        {
-            id: 8,
-            name: 'Float to String',
-            nameEdit: false,
-            description: 'Definition of a static integer',
-            inputs: [{ name: 'Float', description: 'Interger to convert to String', type: 'Float' }],
-            outputs: [{ name: 'String', description: 'The Ineteger as String', type: 'String' }]
+            description: 'Static default String',
+            nodes: [
+                { id: 1, io: 'input', name: '', description: 'Text', type: 'String' },
+                { id: 2, io: 'output', name: '', description: 'Text', type: 'String' },
+            ]
         },
     ]
 };

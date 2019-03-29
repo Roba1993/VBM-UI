@@ -242,6 +242,13 @@ class VBM {
                         // get the right node configuration for this node of the already created block
                         var nodeConfig = blockConfig.nodes.find(n => { return n.id === node.config.id });
 
+                        // set the node value
+                        if (node.value !== null && nodeConfig.value !== undefined) {
+                            node.value.setText(nodeConfig.value);
+                            node.updateSize();
+
+                        }
+
                         // we need to have connected block and node
                         if (nodeConfig.connectedBlockId !== null || nodeConfig.connectedNodeId !== null) {
                             // create a new connection
@@ -261,11 +268,13 @@ class VBM {
 
 
                     }
-                })
+                });
 
-
+                block.updateBlock();
             }
         });
+
+        that.redrawConnections();
     }
 
     getNode(blockId, nodeId) {

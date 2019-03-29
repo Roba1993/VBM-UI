@@ -109,7 +109,7 @@ export default class Node extends Konva.Group {
      * Add the value textbox for the node
      */
     addValue() {
-        if (this.type.valueEdit !== true) {
+        if (this.type.valueEdit !== true || this.config.io === "output") {
             this.value = null;
             return;
         }
@@ -148,10 +148,7 @@ export default class Node extends Konva.Group {
      */
     updateSize() {
         // update value position
-        if (this.type.valueEdit === true && this.config.io == "output") {
-            this.value.x(-this.text.width() - this.value.width() - 5);
-        }
-        else if (this.type.valueEdit === true) {
+        if (this.type.valueEdit === true && this.config.io === "input") {
             this.value.x(this.text.width() + 5);
         }
 

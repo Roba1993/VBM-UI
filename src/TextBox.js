@@ -63,6 +63,12 @@ export default class TextBox extends Konva.Group {
         this.updateSize();
     }
 
+    setText(text) {
+        this.text = text;
+        this.textfield.text(text);
+        this.updateSize();
+    }
+
     /**
      * Recalculate the size of the textbox to adopt to text changes
      */
