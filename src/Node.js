@@ -92,8 +92,10 @@ export default class Node extends Konva.Group {
     addText() {
         var that = this;
 
+        var str = that.config.name === undefined ? this.type.type : that.config.name;
+
         var text = new Text({
-            text: that.config.io == "input" ? "   " + that.config.name : that.config.name + "   ",
+            text: that.config.io == "input" ? "   " + str : str + "   ",
             fontSize: that.config.style.blockNodeTextSize,
             editable: that.config.nameEdit,
             vbm: that.config.vbm,
