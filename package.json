@@ -2,9 +2,9 @@
   "name": "vbm-ui",
   "version": "1.0.0",
   "description": "Visual Business Modelling UI",
-  "private": true,
   "author": "Robert Schütte",
   "license": "MIT",
+  "main": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Roba1993/VBM-UI.git"
