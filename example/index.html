@@ -15,93 +15,22 @@
         }
 
         #container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            position: relative;
+            height: 900px;
+            margin: 100px;
+            border: 2px solid black;
         }
     </style>
 </head>
 
 <body>
-    <div id="container"></div>
+    <div id="container">
+        <visual-modeler id="test"></visual-modeler>
+    </div>
+
+
     <script src="./../dist/main.js"></script>
     <script>
-        /*var logic = {
-            rules: {
-                strictInputOutput: true,    // Only allows to link inputs and outputs
-                strictDifferentBlock: true, // Deny any link to the own block
-                strictConnections: true     // Only allows to link matching types
-            },
-            style: {
-                // Block Header style definition
-                blockHeaderMargin: 5,
-                blockHeaderTextSize: 20,
-                blockHeaderTextColor: '#FFFFFF',
-                blockHeaderStartColor: '#7777f7DD',
-                blockHeaderEndColor: '#7777f7DD',
-
-                // Block style definition
-                blockCornerRadius: 10,
-                blockStartColor: '#000000DD',
-                blockEndColor: '#000000DD',
-                blockBorderColor: 'orange',
-                blockNodeSpacing: 10,
-                blockNodeTextSize: 16,
-                blockNodeValueBackground: 'white',
-
-                // Creation Dialog style definition
-                creationWidth: 250,
-                creationHeight: 350,
-                creationColor: '#7777f7DD',
-                creationTextSize: 16,
-                creationTextSpacing: 4,
-                creationCornerRadius: 10,
-                creationFilterTextSize: 20,
-            },
-            connections: [
-                { type: 'Execution', color: 'black' },
-                { type: 'String', color: 'purple', valueEdit: true, valueDefault: 'Text', },
-                { type: 'Integer', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^\d]/g, ''); } },
-                { type: 'Float', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^(\d+\.?\d+)]/g, ''); } },
-            ],
-            blocks: [
-                {
-                    id: 1,
-                    name: 'Start',
-                    nameEdit: false,
-                    description: 'Startpoint for the logic',
-                    inputs: [],
-                    outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
-                    nodes: [{ id: 1, io: 'output', name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
-                },
-                {
-                    id: 2,
-                    name: 'Console Log',
-                    nameEdit: false,
-                    description: 'Standard printf/log output to the terminal',
-                    inputs: [
-                        { name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
-                        { name: 'Text', description: 'The text to log', type: 'String' }],
-                    outputs: [{ name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' }],
-                    nodes: [
-                        { id: 1, io: 'input', name: 'Run', description: 'Connection to the next Execution block', type: 'Execution' },
-                        { id: 2, io: 'output', name: 'Next', description: 'Connection to the next Execution block', type: 'Execution' },
-                        { id: 3, io: 'input', name: 'Text', description: 'The text to log', type: 'String' }
-                    ]
-                },
-                {
-                    id: 3,
-                    name: 'Static Text',
-                    nameEdit: false,
-                    description: 'Definition of a static text',
-                    nodes: [
-                        { id: 1, io: 'input', name: '', nameEdit: false, description: 'The defined static text', type: 'String' },
-                        { id: 2, io: 'output', name: '', nameEdit: false, description: 'The defined static text', type: 'String' }
-                    ]
-                },
-            ]
-        };*/
-
         var logic = {
             "blocks": [
                 {
@@ -207,12 +136,15 @@
             }
         };
 
-        var vbm = new VBM('container', logic);
-        vbm.addBlock(1, 50, 50);
+        //var vbm = new VBM('container', logic);
+        //vbm.addBlock(1, 50, 50);
 
-        /*vbm.setBusinesModel(JSON.parse(`
+        var model = JSON.parse(`
         [{"blockId":1,"blockTypeId":1,"position":{"x":271,"y":87},"nodes":[{"id":0,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":2,"connectedBlockTypeId":2,"connectedNodeId":0}]},{"blockId":2,"blockTypeId":2,"position":{"x":457,"y":92},"nodes":[{"id":0,"nodeType":"input","connectionType":"Execution","value":null,"connectedBlockId":1,"connectedBlockTypeId":1,"connectedNodeId":0},{"id":1,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":3,"connectedBlockTypeId":2,"connectedNodeId":0},{"id":2,"nodeType":"input","connectionType":"String","value":"Hello","connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null}]},{"blockId":4,"blockTypeId":3,"position":{"x":451,"y":221},"nodes":[{"id":2,"nodeType":"input","connectionType":"String","value":"World","connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null},{"id":3,"nodeType":"output","connectionType":"String","value":null,"connectedBlockId":3,"connectedBlockTypeId":2,"connectedNodeId":2}]},{"blockId":3,"blockTypeId":2,"position":{"x":765,"y":121},"nodes":[{"id":0,"nodeType":"input","connectionType":"Execution","value":null,"connectedBlockId":2,"connectedBlockTypeId":2,"connectedNodeId":1},{"id":1,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":5,"connectedBlockTypeId":2,"connectedNodeId":0},{"id":2,"nodeType":"input","connectionType":"String","value":null,"connectedBlockId":4,"connectedBlockTypeId":3,"connectedNodeId":3}]},{"blockId":5,"blockTypeId":2,"position":{"x":1048,"y":155},"nodes":[{"id":0,"nodeType":"input","connectionType":"Execution","value":null,"connectedBlockId":3,"connectedBlockTypeId":2,"connectedNodeId":1},{"id":1,"nodeType":"output","connectionType":"Execution","value":null,"connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null},{"id":2,"nodeType":"input","connectionType":"String","value":null,"connectedBlockId":6,"connectedBlockTypeId":3,"connectedNodeId":3}]},{"blockId":6,"blockTypeId":3,"position":{"x":790,"y":291},"nodes":[{"id":2,"nodeType":"input","connectionType":"String","value":null,"connectedBlockId":7,"connectedBlockTypeId":3,"connectedNodeId":3},{"id":3,"nodeType":"output","connectionType":"String","value":null,"connectedBlockId":5,"connectedBlockTypeId":2,"connectedNodeId":2}]},{"blockId":7,"blockTypeId":3,"position":{"x":498,"y":338},"nodes":[{"id":2,"nodeType":"input","connectionType":"String","value":"!!!","connectedBlockId":null,"connectedBlockTypeId":null,"connectedNodeId":null},{"id":3,"nodeType":"output","connectionType":"String","value":null,"connectedBlockId":6,"connectedBlockTypeId":3,"connectedNodeId":2}]}]
-        `));*/
+        `);
+
+        document.querySelector("#test").logic = logic;
+        document.querySelector("#test").model = model;
     </script>
 </body>
 

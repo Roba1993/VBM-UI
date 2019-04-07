@@ -32,7 +32,7 @@ export default class Node extends Konva.Group {
 
             that.vbm.newConnection = new Connection({
                 start: [that.absolutePosition().x, that.absolutePosition().y + that.config.style.blockNodeTextSize / 2],
-                end: [evt.evt.x, evt.evt.y],
+                end: [evt.evt.LayerX, evt.evt.layerY],
                 vbm: that.vbm,
                 color: that.type.color,
             });
