@@ -6,6 +6,7 @@ import combineDefaultLogic from './Config';
 
 export default class VBM {
     constructor(element, logic) {
+        this.element = element;
         this.logic = combineDefaultLogic(logic);
         this.idCounter = 0;
         var that = this;
@@ -96,11 +97,9 @@ export default class VBM {
 
         // update newConnection position is requried
         document.onmousemove = function (evt) {
-            console.log(evt);
-            console.log(evt.x);
-            console.log(evt.y);
             if (that.newConnection != null) {
-                that.newConnection.setEndPosition(evt.layerX, evt.layerY);
+                var c_pos = element.getBoundingClientRect(that.element);
+                that.newConnection.setEndPosition(evt.x - c_pos.x, evt.y - c_pos.y);
                 that.layer.draw();
             }
         };

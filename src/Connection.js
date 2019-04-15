@@ -45,7 +45,8 @@ export default class Connection extends Konva.Line {
      */
     setEndPosition(x, y) {
         var points = this.points();
-        this.points(Connection.calculateBezier(points[0], points[1], x, y));
+        var pa = this.config.vbm.stage.absolutePosition();
+        this.points(Connection.calculateBezier(points[0], points[1], x - pa.x, y - pa.y));
     }
 
     /**
