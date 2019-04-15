@@ -97,6 +97,8 @@ export default class VBM {
         // update newConnection position is requried
         document.onmousemove = function (evt) {
             console.log(evt);
+            console.log(evt.x);
+            console.log(evt.y);
             if (that.newConnection != null) {
                 that.newConnection.setEndPosition(evt.layerX, evt.layerY);
                 that.layer.draw();
