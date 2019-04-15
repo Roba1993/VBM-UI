@@ -26,8 +26,6 @@ export default class VBM {
             container: element,
             width: element.offsetWidth,
             height: element.offsetHeight,
-            //width: 900,
-            //height: 900,
             draggable: true
         });
 
@@ -64,7 +62,6 @@ export default class VBM {
 
         // context menu opne create
         this.stage.on('contextmenu', function (evt) {
-            console.log(evt.evt);
             that.creationArea.toggle({ x: evt.evt.layerX, y: evt.evt.layerY });
             that.focusAll(false);
             that.layer.draw();
@@ -100,7 +97,8 @@ export default class VBM {
         // update newConnection position is requried
         document.body.onmousemove = function (evt) {
             if (that.newConnection != null) {
-                that.newConnection.setEndPosition(evt.layerX, evt.layerY);
+                console.log(evt);
+                that.newConnection.setEndPosition(evt.x, evt.y);
                 that.layer.draw();
             }
         };
