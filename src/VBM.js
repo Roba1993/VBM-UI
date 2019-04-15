@@ -95,10 +95,9 @@ export default class VBM {
         });
 
         // update newConnection position is requried
-        document.body.onmousemove = function (evt) {
+        document.onmousemove = function (evt) {
             if (that.newConnection != null) {
-                console.log(evt);
-                that.newConnection.setEndPosition(evt.x, evt.y);
+                that.newConnection.setEndPosition(evt.layerX, evt.layerY);
                 that.layer.draw();
             }
         };
