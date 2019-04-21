@@ -15,10 +15,7 @@ class VisualModeler extends HTMLElement {
         this.canvas.style.width = "100%";
         this.canvas.style.height = "100%";
 
-        console.log(this.getAttribute('logic'));
-
         this.vbm = new VBM(this.canvas);
-        this.vbm.addBlock(1, 50, 50);
     }
 
     set logic(logic) {
