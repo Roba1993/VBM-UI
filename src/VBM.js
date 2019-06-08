@@ -1,4 +1,4 @@
-import Konva from 'konva';
+//import Konva from 'konva';
 import Block from './Block';
 import Creation from './Creation';
 import Connection from './Connection';
