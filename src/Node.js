@@ -9,7 +9,7 @@ export default class Node extends Konva.Group {
 
         this.config = config;
         this.vbm = config.vbm;
-        this.linkObj = null;
+        this.linkedObjects = [];
         this.type = this.config.vbm.getConnectionRule(this.config.type);
         var that = this;
 
@@ -24,19 +24,18 @@ export default class Node extends Konva.Group {
             document.body.style.cursor = 'crosshair';
         });
 
-        // on mouse down create a new connection if possiblt
+        // on mouse down create a new connection if possible
         this.on('mousedown', function (evt) {
             if (that.vbm.newConnection != null) {
                 return;
             }
 
             that.vbm.newConnection = new Connection({
-                start: [that.absolutePosition().x, that.absolutePosition().y + that.config.style.blockNodeTextSize / 2],
-                end: [evt.evt.LayerX, evt.evt.layerY],
                 vbm: that.vbm,
-                color: that.type.color,
+                node: that,
             });
-            that.vbm.newConnection.linkObjA = that;
+
+            that.vbm.newConnection.setEndPosition([evt.evt.LayerX, evt.evt.layerY]);
             that.vbm.layer.draw();
         });
 
@@ -47,24 +46,13 @@ export default class Node extends Konva.Group {
                 return;
             }
 
-            // No links to own block when rule is set
-            if (this.config.rules.strictDifferentBlock == true && that.vbm.newConnection.linkObjA.config.block == that.config.block) {
+            // try to finish the new connection
+            let x = that.vbm.newConnection.activate(evt.target.parent);
+            console.log(x);
+
+            if(x !== true) {
                 return;
             }
-
-            // Only Input to Output mapping allowed when rule is set
-            if (this.config.rules.strictInputOutput == true && that.vbm.newConnection.linkObjA.config.io == evt.target.parent.config.io) {
-                return;
-            }
-
-            // Only same type of nodes allowed when rule is set
-            if (this.config.rules.strictConnections == true && that.vbm.newConnection.linkObjA.type.type !== evt.target.parent.type.type) {
-                return;
-            }
-
-            // connect the nodes together
-            that.vbm.newConnection.linkObjB = evt.target.parent;
-            that.vbm.newConnection.activate(that.config.style.blockNodeTextSize / 2);
         });
     }
 
@@ -160,6 +148,10 @@ export default class Node extends Konva.Group {
         this.height(this.text.height());
         this.width(this.text.width() + 5 + valueWidth);
 
+        this.linkedObjects.forEach(o => {
+            o.updatePosition();
+        });
+
         // redraw node
         if (this.getLayer() !== null) {
             this.getLayer().draw();
@@ -172,18 +164,48 @@ export default class Node extends Konva.Group {
         return text;
     };
 
+    setConnection(connection) {
+        if (this.get_io_type() === "input") {
+            // only one input connection allowed, if we have more
+            if (this.linkedObjects.length !== 0) {
+                // destroy them all
+                this.linkedObjects.forEach(o => {
+                    o.destroy();
+                });
+            }
+
+            // create a new list with just the new connection
+            this.linkedObjects = [connection];
+        }
+        else {
+            this.linkedObjects.push(connection);
+        }
+
+        this.updateLinkObj();
+    }
+
+    removeConnection(connection) {
+        if (this.get_io_type() === "input") {
+            this.linkedObjects = [];
+        }
+        else {
+            this.linkedObjects = this.linkedObjects.filter(o => {
+                return o !== connection;
+            });
+        }
+
+        this.updateLinkObj();
+    }
+
     /**
      * When the link object gets updated, check if new value fields need to be created.
      * Also updates if the circle if filled or not.
      * 
      * @param {The new link object to be set} linkObj 
      */
-    updateLinkObj(linkObj) {
-        // set the new status
-        this.linkObj = linkObj;
-
+    updateLinkObj() {
         // when there is a linked object 
-        if (linkObj !== null) {
+        if (this.linkedObjects.length !== 0) {
             if (this.value !== null) {
                 //destroy value field
                 this.value.destroy();
@@ -205,27 +227,33 @@ export default class Node extends Konva.Group {
         }
     }
 
-    getNodeInfo() {
-        if (this.linkObj === null) {
-            return {
-                id: this.config.id,
-                nodeType: this.config.io,
-                connectionType: this.type.type,
-                value: (this.value !== null) ? this.value.text : null,
-                connectedBlockId: null,
-                connectedBlockTypeId: null,
-                connectedNodeId: null,
-            }
-        }
+    get_io_type() {
+        return this.config.io;
+    }
 
+    getNodeHeight() {
+        return this.config.style.blockNodeTextSize / 2;
+    }
+
+    getId() {
+        return this.config.id;
+    }
+
+    getBlockId() {
+        return this.getParent().getParent().id()
+    }
+
+    getNodeType() {
+        return this.type.type;
+    }
+
+    getNodeInfo() {
         return {
             id: this.config.id,
             nodeType: this.config.io,
             connectionType: this.type.type,
             value: (this.value !== null) ? this.value.text : null,
-            connectedBlockId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.getParent().getParent().id() : this.linkObj.linkObjA.getParent().getParent().id(),
-            connectedBlockTypeId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.config.block.config.id : this.linkObj.linkObjA.config.block.config.id,
-            connectedNodeId: (this.linkObj.linkObjA === this) ? this.linkObj.linkObjB.config.id : this.linkObj.linkObjA.config.id,
+            connections: this.linkedObjects.map(o => o.getConnectionInfo())
         }
     }
 }

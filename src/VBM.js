@@ -122,7 +122,7 @@ export default class VBM {
         var that = this;
 
         this.conGroup.children.forEach(con => {
-            con.updatePosition(that.logic.style.blockNodeTextSize / 2);
+            con.updatePosition();
         });
         this.layer.draw();
     }

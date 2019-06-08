@@ -12,18 +12,35 @@ export default class Connection extends Konva.Line {
      */
     constructor(config) {
         super({
-            stroke: config.color,
+            stroke: config.vbm.getConnectionRule(config.node.getNodeType()).color,
             lineCap: 'round',
             lineJoin: 'round',
             bezier: true,
         });
 
-        this.config = config;
-        this.linkObjA = null;
-        this.linkObjB = null;
+        this.startNode = null;
+        this.endNode = null;
 
-        this.setPosition(config.start, config.end);
-        this.config.vbm.conGroup.add(this);
+        this.vbm = config.vbm;
+        this.setNodeByType(config.node);
+        this.setStartPosition(config.node);
+
+        // add connection to the list of all connections
+        config.vbm.conGroup.add(this);
+    }
+
+    /**
+     * Set's a node automatically as a start or end node
+     * 
+     * @param {Node to set either as start or end Node} node 
+     */
+    setNodeByType(node) {
+        if (node.get_io_type() === "input") {
+            this.startNode = node;
+        }
+        else {
+            this.endNode = node;
+        }
     }
 
     /**
@@ -32,9 +49,8 @@ export default class Connection extends Konva.Line {
      * @param {x/y Array of the start position} posA 
      * @param {x/y Array of the end position} posB 
      */
-    setPosition(posA, posB) {
-        var pa = this.config.vbm.stage.absolutePosition();
-        this.points(Connection.calculateBezier(posA[0] - pa.x, posA[1] - pa.y, posB[0] - pa.x, posB[1] - pa.y));
+    setStartPosition(node) {
+        this.points(Connection.calculateBezier(node.absolutePosition().x, node.absolutePosition().y + node.getNodeHeight(), 0, 0));
     }
 
     /**
@@ -45,18 +61,18 @@ export default class Connection extends Konva.Line {
      */
     setEndPosition(x, y) {
         var points = this.points();
-        var pa = this.config.vbm.stage.absolutePosition();
+        var pa = this.vbm.stage.absolutePosition();
         this.points(Connection.calculateBezier(points[0], points[1], x - pa.x, y - pa.y));
     }
 
     /**
      * Updates the connection start and end position automatically.
      */
-    updatePosition(offsetY) {
-        if (this.linkObjA != null && this.linkObjB != null) {
-            this.setPosition(
-                [this.linkObjA.absolutePosition().x, this.linkObjA.absolutePosition().y + offsetY],
-                [this.linkObjB.absolutePosition().x, this.linkObjB.absolutePosition().y + offsetY]);
+    updatePosition() {
+        if (this.startNode != null && this.endNode != null) {
+            this.points(Connection.calculateBezier(
+                this.startNode.absolutePosition().x, this.startNode.absolutePosition().y + this.startNode.getNodeHeight(),
+                this.endNode.absolutePosition().x, this.endNode.absolutePosition().y + this.endNode.getNodeHeight()));
         }
 
     }
@@ -65,19 +81,12 @@ export default class Connection extends Konva.Line {
      * Unregisters himself at the nodes and destroys himself
      */
     destroy() {
-        // unlink the connection object in link object B
-        // if a full connection is available
-        if (this.linkObjB !== null) {
-            this.linkObjB.updateLinkObj(null);
-
-            // unlink the connection object in link object A
-            if (this.linkObjA !== null) {
-                this.linkObjA.updateLinkObj(null);
-            }
+        if (this.startNode !== null) {
+            this.startNode.removeConnection(this);
         }
-        // for a half connection just set the linkObjA to null
-        else {
-            this.linkObjA = null;
+
+        if (this.endNode !== null) {
+            this.endNode.removeConnection(this);
         }
 
         // call super to destroy
@@ -90,32 +99,61 @@ export default class Connection extends Konva.Line {
      * 
      * @param {Pixel offset for the Y-Axes for the connection} offsetY 
      */
-    activate(offsetY) {
-        // Both linkObjects need to be set
-        if (this.linkObjA == null || this.linkObjA == null) {
-            return;
+    activate(node) {
+        // We set the second node and ensure, that he fit's his already existing counterpart
+        if (node.get_io_type() === "input" && this.endNode !== null) {
+            // we check of both nodes have different parent blocks
+            if (this.endNode.getBlockId() === node.getBlockId()) {
+                return "New startNode has same parent as defined endNode";
+            }
+
+            // we check if the new node have the same type
+            if (this.endNode.getNodeType() !== node.getNodeType()) {
+                return "New startNode has a different type as defined endNode";
+            }
+
+            this.startNode = node;
+        }
+        else if (node.get_io_type() === "output" && this.startNode !== null) {
+            // we check of both nodes have different parent blocks
+            if (this.startNode.getBlockId() === node.getBlockId()) {
+                return "New endNode has same parent as defined startNode";
+            }
+
+            // we check if the new node have the same type
+            if (this.startNode.getNodeType() !== node.getNodeType()) {
+                return "New endNode has a different type as defined startNode";
+            }
+
+            this.endNode = node;
+        }
+        else {
+            return "Both nodes had the same io type"
         }
 
-        // delete the previous existing connection for node A
-        if (this.linkObjA.linkObj != null) {
-            this.linkObjA.linkObj.destroy();
-        }
+        // set this connection at the nodes
+        this.startNode.setConnection(this);
+        this.endNode.setConnection(this);
 
-        // delete the previous existing connection for node B
-        if (this.linkObjB.linkObj != null) {
-            this.linkObjB.linkObj.destroy();
-        }
-
-        // set this connection as the actual connection for node A&B
-        this.linkObjA.updateLinkObj(this);
-        this.linkObjB.updateLinkObj(this);
-
-        // add to the connection list and remove as new connection
-        this.config.vbm.newConnection = null;
+        // remove as new connection
+        this.vbm.newConnection = null;
 
         // update the position
-        this.updatePosition(offsetY);
-        this.config.vbm.layer.draw();
+        this.updatePosition();
+        this.getLayer().draw();
+
+        return true;
+    }
+
+
+    getConnectionInfo() {
+        return {
+            type: this.startNode.getNodeType(),
+            startBlock: this.startNode.getBlockId(),
+            endBlock: this.endNode.getBlockId(),
+            startNode: this.startNode.getId(),
+            endNode: this.endNode.getId(),
+        }
     }
 
     /**
