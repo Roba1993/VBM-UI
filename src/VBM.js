@@ -14,13 +14,15 @@ export default class VBM {
         // We use a single layer for all drawings
         this.layer = new Konva.Layer();
 
-
         // drawing group for all connections
         this.conGroup = new Konva.Group();
         this.layer.add(this.conGroup);
         // Variable for the new connection creation
         this.newConnection = null;
 
+        // drawing group for all connections
+        this.boxGroup = new Konva.Group();
+        this.layer.add(this.boxGroup);
 
         // Konva stage (main area) init
         this.stage = new Konva.Stage({
@@ -93,6 +95,10 @@ export default class VBM {
                 console.log(that.getBusinesModel());
                 console.log(JSON.stringify(that.getBusinesModel()));
             }
+            else if (e.keyCode === 121) {
+                let bm = JSON.stringify(that.getBusinesModel());
+                that.setBusinesModel(JSON.parse(bm));
+            }
         });
 
         // update newConnection position is requried
@@ -138,7 +144,7 @@ export default class VBM {
                 b.y = y;
                 b.logic = JSON.parse(JSON.stringify(that.logic));
 
-                this.layer.add(new Block(b));
+                this.boxGroup.add(new Block(b));
                 this.layer.draw();
                 return true;
             }
@@ -170,7 +176,7 @@ export default class VBM {
     }
 
     focusAll(status) {
-        this.layer.children.forEach(comp => {
+        this.boxGroup.children.forEach(comp => {
             if (typeof comp.focus === "function") {
                 comp.focus(status);
             }
@@ -179,7 +185,7 @@ export default class VBM {
     }
 
     destroyAllSelected() {
-        var remove = this.layer.getChildren(child => {
+        var remove = this.boxGroup.getChildren(child => {
             return (typeof child.focus === "function" && child.focus() === true);
         });
 
@@ -193,7 +199,7 @@ export default class VBM {
     getBusinesModel() {
         var blocks = [];
 
-        this.layer.getChildren().forEach(block => {
+        this.boxGroup.getChildren().forEach(block => {
             if (block.type === 'Block') {
                 blocks.push(block.getBlockInfo());
             }
@@ -209,11 +215,7 @@ export default class VBM {
     clear() {
         // clear sheet
         this.conGroup.destroyChildren();
-        this.layer.getChildren().forEach(block => {
-            if (block.type === 'Block') {
-                block.destroy();
-            }
-        });
+        this.boxGroup.destroyChildren();
 
         this.idCounter = 0;
     }
@@ -222,6 +224,8 @@ export default class VBM {
         var that = this;
         this.clear();
 
+        console.log(blocksConfig);
+
         // Create the single blocks
         blocksConfig.forEach(block => {
             that.addBlock(block.blockTypeId, block.position.x, block.position.y, block.blockId);
@@ -229,7 +233,7 @@ export default class VBM {
         });
 
         // Create the connection between the new created blocks
-        this.layer.getChildren().forEach(block => {
+        this.boxGroup.getChildren().forEach(block => {
             if (block.type === 'Block') {
                 // get the block from the configuration to know it to be state
                 var blockConfig = blocksConfig.find(b => { return b.blockId === block.id(); });
@@ -248,24 +252,14 @@ export default class VBM {
 
                         }
 
-                        // we need to have connected block and node
-                        if (nodeConfig.connectedBlockId !== null || nodeConfig.connectedNodeId !== null) {
-                            // create a new connection
+                        nodeConfig.connections.forEach(con => {
                             var newConnection = new Connection({
-                                start: [0, 0],
-                                end: [0, 0],
                                 vbm: that,
-                                color: that.getConnectionRule(nodeConfig.connectionType).color,
+                                node: node,
                             });
-                            newConnection.linkObjA = node;
-                            newConnection.linkObjB = that.getNode(nodeConfig.connectedBlockId, nodeConfig.connectedNodeId);
 
-                            // add connection and activate it
-                            that.conGroup.add(newConnection);
-                            newConnection.activate(node.config.style.blockNodeTextSize / 2);
-                        }
-
-
+                            newConnection.activate(that.getNode(con.startBlock, con.startNode));
+                        });
                     }
                 });
 
@@ -274,13 +268,14 @@ export default class VBM {
         });
 
         that.redrawConnections();
+
     }
 
     getNode(blockId, nodeId) {
         var ret = null;
 
         // loop over all blocks
-        this.layer.getChildren().forEach(block => {
+        this.boxGroup.getChildren().forEach(block => {
             // search for the right block id
             if (block.type === 'Block' && block.id() === blockId) {
                 var nodes = block.nodes.getChildren().filter(n => { return (n.config !== undefined) });

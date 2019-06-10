@@ -91,7 +91,7 @@ export default class Block extends Konva.Group {
         // on drag 
         box.on('dragmove', function (evt) {
             // get all selected blocks
-            var move = that.config.vbm.layer.getChildren(child => {
+            var move = that.config.vbm.boxGroup.getChildren(child => {
                 return (typeof child.focus === "function" && child.focus() === true);
             });
 
@@ -214,7 +214,7 @@ export default class Block extends Konva.Group {
         // on drag 
         text.on('dragmove', function (evt) {
             // get all selected blocks
-            var move = that.config.vbm.layer.getChildren(child => {
+            var move = that.config.vbm.boxGroup.getChildren(child => {
                 return (typeof child.focus === "function" && child.focus() === true);
             });
 

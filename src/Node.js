@@ -30,6 +30,10 @@ export default class Node extends Konva.Group {
                 return;
             }
 
+            if(evt.target.parent !== that) {
+                return;
+            }
+
             that.vbm.newConnection = new Connection({
                 vbm: that.vbm,
                 node: that,
@@ -47,12 +51,7 @@ export default class Node extends Konva.Group {
             }
 
             // try to finish the new connection
-            let x = that.vbm.newConnection.activate(evt.target.parent);
-            console.log(x);
-
-            if(x !== true) {
-                return;
-            }
+            that.vbm.newConnection.activate(evt.target.parent);
         });
     }
 
@@ -165,7 +164,7 @@ export default class Node extends Konva.Group {
     };
 
     setConnection(connection) {
-        if (this.get_io_type() === "input") {
+        if (this.get_io_type() === "input" || !this.type.multiOutput) {
             // only one input connection allowed, if we have more
             if (this.linkedObjects.length !== 0) {
                 // destroy them all

@@ -31,10 +31,10 @@ var defaultLogic = {
         creationFilterTextSize: 20,
     },
     connections: [
-        { type: 'Execution', color: 'black' },
-        { type: 'String', color: 'purple', valueEdit: true, valueDefault: 'Text', },
-        { type: 'Integer', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^\d]/g, ''); } },
-        { type: 'Float', color: 'green', valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^(\d+\.?\d+)]/g, ''); } },
+        { type: 'Execution', color: 'black', multiOutput: false},
+        { type: 'String', color: 'purple', multiOutput: true, valueEdit: true, valueDefault: 'Text', },
+        { type: 'Integer', color: 'green', multiOutput: true, valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^\d]/g, ''); } },
+        { type: 'Float', color: 'green', multiOutput: true, valueEdit: true, valueDefault: '0', valueCheck: (text) => { return text.replace(/[^(\d+\.?\d+)]/g, ''); } },
     ],
     blocks: [
         {

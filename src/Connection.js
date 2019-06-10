@@ -24,6 +24,7 @@ export default class Connection extends Konva.Line {
         this.vbm = config.vbm;
         this.setNodeByType(config.node);
         this.setStartPosition(config.node);
+        
 
         // add connection to the list of all connections
         config.vbm.conGroup.add(this);
@@ -35,7 +36,7 @@ export default class Connection extends Konva.Line {
      * @param {Node to set either as start or end Node} node 
      */
     setNodeByType(node) {
-        if (node.get_io_type() === "input") {
+        if (node.get_io_type() === "output") {
             this.startNode = node;
         }
         else {
@@ -101,7 +102,7 @@ export default class Connection extends Konva.Line {
      */
     activate(node) {
         // We set the second node and ensure, that he fit's his already existing counterpart
-        if (node.get_io_type() === "input" && this.endNode !== null) {
+        if (node.get_io_type() === "output" && this.endNode !== null) {
             // we check of both nodes have different parent blocks
             if (this.endNode.getBlockId() === node.getBlockId()) {
                 return "New startNode has same parent as defined endNode";
@@ -114,7 +115,7 @@ export default class Connection extends Konva.Line {
 
             this.startNode = node;
         }
-        else if (node.get_io_type() === "output" && this.startNode !== null) {
+        else if (node.get_io_type() === "input" && this.startNode !== null) {
             // we check of both nodes have different parent blocks
             if (this.startNode.getBlockId() === node.getBlockId()) {
                 return "New endNode has same parent as defined startNode";
