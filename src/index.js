@@ -10,15 +10,17 @@ class VisualModeler extends HTMLElement {
     }
 
     connectedCallback() {
+        let self = this;
+
         import('konva').then(Konva => {
             window.Konva = Konva;
 
-            this.canvas = this.shadow.querySelector('div');
+            self.canvas = this.shadow.querySelector('div');
 
-            this.canvas.style.width = "100%";
-            this.canvas.style.height = "100%";
+            self.canvas.style.width = "100%";
+            self.canvas.style.height = "100%";
     
-            this.vbm = new VBM(this.canvas);
+            self.vbm = new VBM(this.canvas);
         });
     }
 

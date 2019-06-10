@@ -224,8 +224,6 @@ export default class VBM {
         var that = this;
         this.clear();
 
-        console.log(blocksConfig);
-
         // Create the single blocks
         blocksConfig.forEach(block => {
             that.addBlock(block.blockTypeId, block.position.x, block.position.y, block.blockId);
