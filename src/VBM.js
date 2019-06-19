@@ -5,7 +5,7 @@ import Connection from './Connection';
 import combineDefaultLogic from './Config';
 
 export default class VBM {
-    constructor(element, logic) {
+    constructor(element, logic, width, height) {
         this.element = element;
         this.logic = combineDefaultLogic(logic);
         this.idCounter = 0;
@@ -27,8 +27,8 @@ export default class VBM {
         // Konva stage (main area) init
         this.stage = new Konva.Stage({
             container: element,
-            width: element.offsetWidth,
-            height: element.offsetHeight,
+            width: width,
+            height: height,
             draggable: true
         });
 

@@ -75,7 +75,7 @@ var defaultLogic = {
 };
 
 export default function combineDefaultLogic(logic) {
-    if(logic === undefined) {
+    if(logic === undefined || logic === null) {
         return defaultLogic;
     }
 

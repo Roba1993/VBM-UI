@@ -5,22 +5,18 @@ class VisualModeler extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
         this.shadow.innerHTML = `
-          <div></div>
+          <div style="width: 100%; height: 100%;"></div>
         `;
     }
 
     connectedCallback() {
-        let self = this;
+        let canvas = this.shadow.querySelector('div');
+        let height = canvas.offsetHeight;
+        let width = canvas.offsetWidth;
 
         import('konva').then(Konva => {
             window.Konva = Konva;
-
-            self.canvas = this.shadow.querySelector('div');
-
-            self.canvas.style.width = "100%";
-            self.canvas.style.height = "100%";
-    
-            self.vbm = new VBM(this.canvas);
+            this.vbm = new VBM(canvas, null, width, height);
         });
     }
 
