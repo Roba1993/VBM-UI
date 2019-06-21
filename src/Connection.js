@@ -24,7 +24,7 @@ export default class Connection extends Konva.Line {
         this.vbm = config.vbm;
         this.setNodeByType(config.node);
         this.setStartPosition(config.node);
-        
+
 
         // add connection to the list of all connections
         config.vbm.conGroup.add(this);
@@ -51,7 +51,8 @@ export default class Connection extends Konva.Line {
      * @param {x/y Array of the end position} posB 
      */
     setStartPosition(node) {
-        this.points(Connection.calculateBezier(node.absolutePosition().x, node.absolutePosition().y + node.getNodeHeight(), 0, 0));
+        let pos = this.vbm.stage.absolutePosition();
+        this.points(Connection.calculateBezier(node.absolutePosition().x - pos.x, node.absolutePosition().y + node.getNodeHeight() - pos.y, 0, 0));
     }
 
     /**
@@ -62,8 +63,9 @@ export default class Connection extends Konva.Line {
      */
     setEndPosition(x, y) {
         var points = this.points();
-        var pa = this.vbm.stage.absolutePosition();
-        this.points(Connection.calculateBezier(points[0], points[1], x - pa.x, y - pa.y));
+        let pos = this.getStage().absolutePosition();
+
+        this.points(Connection.calculateBezier(points[0], points[1], x - pos.x, y - pos.y));
     }
 
     /**
@@ -71,9 +73,11 @@ export default class Connection extends Konva.Line {
      */
     updatePosition() {
         if (this.startNode != null && this.endNode != null) {
+            let pos = this.getStage().absolutePosition();
+
             this.points(Connection.calculateBezier(
-                this.startNode.absolutePosition().x, this.startNode.absolutePosition().y + this.startNode.getNodeHeight(),
-                this.endNode.absolutePosition().x, this.endNode.absolutePosition().y + this.endNode.getNodeHeight()));
+                this.startNode.absolutePosition().x - pos.x, this.startNode.absolutePosition().y + this.startNode.getNodeHeight() - pos.y,
+                this.endNode.absolutePosition().x - pos.x, this.endNode.absolutePosition().y + this.endNode.getNodeHeight() - pos.y));
         }
 
     }

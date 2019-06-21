@@ -137,11 +137,13 @@ export default class VBM {
         var that = this;
         this.logic.blocks.forEach(block => {
             if (block.id == blockIid) {
+                let pos = that.stage.absolutePosition();
+
                 var b = JSON.parse(JSON.stringify(block));
                 b.uid = uid;
                 b.vbm = that;
-                b.x = x;
-                b.y = y;
+                b.x = x - pos.x;
+                b.y = y - pos.y;
                 b.logic = JSON.parse(JSON.stringify(that.logic));
 
                 this.boxGroup.add(new Block(b));
