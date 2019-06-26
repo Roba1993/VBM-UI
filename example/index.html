@@ -43,11 +43,12 @@
                             "name": "Next",
                             "type": "Execution"
                         }
-                    ]
+                    ],
+                    "typ": "Start"
                 },
                 {
                     "id": 2,
-                    "name": "Console Log",
+                    "name": "ConsolePrint",
                     "nodes": [
                         {
                             "id": 0,
@@ -66,11 +67,12 @@
                             "io": "input",
                             "type": "String"
                         }
-                    ]
+                    ],
+                    "typ": "Normal"
                 },
                 {
                     "id": 3,
-                    "name": "Static String",
+                    "name": "StaticString",
                     "nodes": [
                         {
                             "id": 2,
@@ -82,11 +84,12 @@
                             "io": "output",
                             "type": "String"
                         }
-                    ]
+                    ],
+                    "typ": "Static"
                 },
                 {
                     "id": 4,
-                    "name": "Add String",
+                    "name": "AddString",
                     "nodes": [
                         {
                             "id": 2,
@@ -103,33 +106,81 @@
                             "io": "input",
                             "type": "String"
                         }
-                    ]
+                    ],
+                    "typ": "Static"
+                },
+                {
+                    "id": 5,
+                    "name": "AddInteger",
+                    "nodes": [
+                        {
+                            "id": 2,
+                            "io": "input",
+                            "type": "i64"
+                        },
+                        {
+                            "id": 3,
+                            "io": "output",
+                            "type": "i64"
+                        },
+                        {
+                            "id": 4,
+                            "io": "input",
+                            "type": "i64"
+                        }
+                    ],
+                    "typ": "Static"
+                },
+                {
+                    "id": 6,
+                    "name": "IntegerToString",
+                    "nodes": [
+                        {
+                            "id": 2,
+                            "io": "input",
+                            "type": "i64"
+                        },
+                        {
+                            "id": 3,
+                            "io": "output",
+                            "type": "String"
+                        }
+                    ],
+                    "typ": "Static"
                 }
             ],
             "connections": [
                 {
-                    "color": "black",
+                    "color": "dark",
+                    "multiOutput": false,
                     "type": "Execution",
                     "valueCheck": "",
                     "valueDefault": "",
-                    "valueEdit": false,
-                    "multiOutput": false
-                },
-                {
-                    "color": "purple",
-                    "type": "String",
-                    "valueCheck": "",
-                    "valueDefault": "Text",
-                    "valueEdit": true,
-                    "multiOutput": true
+                    "valueEdit": false
                 },
                 {
                     "color": "green",
-                    "type": "Integer",
+                    "multiOutput": true,
+                    "type": "String",
+                    "valueCheck": "",
+                    "valueDefault": "Text",
+                    "valueEdit": true
+                },
+                {
+                    "color": "lightgreen",
+                    "multiOutput": true,
+                    "type": "i64",
                     "valueCheck": "",
                     "valueDefault": "0",
-                    "valueEdit": true,
-                    "multiOutput": true
+                    "valueEdit": true
+                },
+                {
+                    "color": "darkgreen",
+                    "multiOutput": true,
+                    "type": "f64",
+                    "valueCheck": "",
+                    "valueDefault": "0.0",
+                    "valueEdit": true
                 }
             ],
             "rules": {
@@ -142,7 +193,7 @@
         //var vbm = new VBM('container', logic);
         //vbm.addBlock(1, 50, 50);
 
-        //document.querySelector("#test").logic = logic;
+        document.querySelector("#test").logic = logic;
     </script>
 </body>
 
