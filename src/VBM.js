@@ -32,6 +32,36 @@ export default class VBM {
             draggable: true
         });
 
+
+        var scaleBy = 1.05;
+        this.stage.on('wheel', e => {
+            e.evt.preventDefault();
+            var oldScale = this.stage.scaleX();
+
+            var mousePointTo = {
+                x: this.stage.getPointerPosition().x / oldScale - this.stage.x() / oldScale,
+                y: this.stage.getPointerPosition().y / oldScale - this.stage.y() / oldScale
+            };
+
+            var newScale =
+                e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+            if (newScale > 0.4 && newScale < 1.5) {
+                this.stage.scale({ x: newScale, y: newScale });
+
+                var newPos = {
+                    x:
+                        -(mousePointTo.x - this.stage.getPointerPosition().x / newScale) *
+                        newScale,
+                    y:
+                        -(mousePointTo.y - this.stage.getPointerPosition().y / newScale) *
+                        newScale
+                };
+                this.stage.position(newPos);
+                this.stage.batchDraw();
+            }
+        });
+
         // The normal mouse icon is the crosshair in out VBM
         this.stage.on('mouseover', function (evt) {
             if (evt.target.nodeType == 'Stage') {
@@ -138,12 +168,13 @@ export default class VBM {
         this.logic.blocks.forEach(block => {
             if (block.id == blockIid) {
                 let pos = that.stage.absolutePosition();
+                let scale = that.stage.scale();
 
                 var b = JSON.parse(JSON.stringify(block));
                 b.uid = uid;
                 b.vbm = that;
-                b.x = x - pos.x;
-                b.y = y - pos.y;
+                b.x = (x - pos.x) / scale.x;
+                b.y = (y - pos.y) / scale.y;
                 b.logic = JSON.parse(JSON.stringify(that.logic));
 
                 this.boxGroup.add(new Block(b));

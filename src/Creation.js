@@ -12,7 +12,8 @@ export default class Creation extends Konva.Group {
 
         this.config = config;
 
-        this.add(this.createBox());
+        this.box = this.createBox();
+        this.add(this.box);
         this.textarea = this.createInput();
 
         this.createList();
@@ -45,6 +46,15 @@ export default class Creation extends Konva.Group {
         this.absolutePosition(pos);
         this.updateTextAreaPos();
         this.moveToTop();
+
+        let s = {
+            x: (1 - this.getStage().scaleX()) + 1,
+            y: (1 - this.getStage().scaleY()) + 1
+        };
+
+        console.log(this.getStage().scale());
+        console.log(s);
+        this.scale(s);
     }
 
     /**
@@ -81,6 +91,7 @@ export default class Creation extends Konva.Group {
             this.textarea.style.top = areaPosition.y + 'px';
             this.textarea.style.left = areaPosition.x + 'px';
         }
+
 
         return areaPosition;
     }

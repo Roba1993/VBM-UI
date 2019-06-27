@@ -52,7 +52,9 @@ export default class Connection extends Konva.Line {
      */
     setStartPosition(node) {
         let pos = this.vbm.stage.absolutePosition();
-        this.points(Connection.calculateBezier(node.absolutePosition().x - pos.x, node.absolutePosition().y + node.getNodeHeight() - pos.y, 0, 0));
+        let scale = this.vbm.stage.scale();
+
+        this.points(Connection.calculateBezier((node.absolutePosition().x - pos.x) / scale.x, (node.absolutePosition().y + node.getNodeHeight() - pos.y) / scale.y, 0, 0));
     }
 
     /**
@@ -64,8 +66,9 @@ export default class Connection extends Konva.Line {
     setEndPosition(x, y) {
         var points = this.points();
         let pos = this.getStage().absolutePosition();
+        let scale = this.getStage().scale();
 
-        this.points(Connection.calculateBezier(points[0], points[1], x - pos.x, y - pos.y));
+        this.points(Connection.calculateBezier(points[0], points[1], (x - pos.x) / scale.x, (y - pos.y) / scale.y));
     }
 
     /**
@@ -73,11 +76,12 @@ export default class Connection extends Konva.Line {
      */
     updatePosition() {
         if (this.startNode != null && this.endNode != null) {
-            let pos = this.getStage().absolutePosition();
+            let pos = this.getStage().position();
+            let scale = this.getStage().scale();
 
             this.points(Connection.calculateBezier(
-                this.startNode.absolutePosition().x - pos.x, this.startNode.absolutePosition().y + this.startNode.getNodeHeight() - pos.y,
-                this.endNode.absolutePosition().x - pos.x, this.endNode.absolutePosition().y + this.endNode.getNodeHeight() - pos.y));
+                (this.startNode.absolutePosition().x - pos.x) / scale.x, (this.startNode.absolutePosition().y + this.startNode.getNodeHeight() - pos.y) / scale.y,
+                (this.endNode.absolutePosition().x - pos.x) / scale.x, (this.endNode.absolutePosition().y + this.endNode.getNodeHeight() - pos.y) / scale.y));
         }
 
     }
