@@ -191,7 +191,7 @@ export default class Block extends Konva.Group {
     createHeaderText() {
         var that = this;
         var text = new Text({
-            text: that.config.name,
+            text: that.config.name.replace(/([A-Z])/g, ' $1').trim(),
             fontSize: that.config.logic.style.blockHeaderTextSize,
             x: that.config.logic.style.blockHeaderMargin,
             y: that.config.logic.style.blockHeaderMargin,

@@ -122,6 +122,7 @@ export default class Creation extends Konva.Group {
         textarea.style.outline = 'none';
         textarea.style.resize = 'none';
         textarea.style.transformOrigin = 'left top';
+        textarea.style.borderRadius = "5px";
 
         // on firefox different width
         if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
@@ -202,10 +203,12 @@ export default class Creation extends Konva.Group {
 
         var index = 0;
         that.config.vbm.logic.blocks.forEach(element => {
-            if (element.name.includes(this.textarea.value)) {
+            if (element.name.toLowerCase().includes(this.textarea.value.toLowerCase())) {
+                var name = element.name.replace(/([A-Z])/g, ' $1').trim();
+
                 var text = new Konva.Text({
                     y: index * (that.config.logic.style.creationTextSize + that.config.logic.style.creationTextSpacing),
-                    text: element.name,
+                    text: name,
                     fontSize: that.config.logic.style.creationTextSize,
                 });
 
