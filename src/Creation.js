@@ -48,12 +48,10 @@ export default class Creation extends Konva.Group {
         this.moveToTop();
 
         let s = {
-            x: (1 - this.getStage().scaleX()) + 1,
-            y: (1 - this.getStage().scaleY()) + 1
+            x: 1 / this.getStage().scaleX(),
+            y: 1 / this.getStage().scaleY()
         };
 
-        console.log(this.getStage().scale());
-        console.log(s);
         this.scale(s);
     }
 
