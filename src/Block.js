@@ -16,9 +16,14 @@ export default class Block extends Konva.Group {
         this.headerText = this.createHeaderText();
         this.nodes = this.createNodes();
 
+        this.commentWidth = 200;
+        this.commentHeight = 100;
+
         this.createBox();
         this.add(this.headerText);
         this.add(this.nodes);
+        this.createResizer();
+
 
         this.updateBlock();
 
@@ -35,7 +40,10 @@ export default class Block extends Konva.Group {
                 this.focus(true);
             }
 
-            this.moveToTop();
+            if (this.config.typ !== "Comment") {
+                this.moveToTop();
+            }
+
             this.config.vbm.layer.draw();
         });
 
@@ -122,6 +130,57 @@ export default class Block extends Konva.Group {
         this.add(box);
     }
 
+    createResizer() {
+        // only execute when the node type is comment
+        if (this.config.typ !== "Comment") {
+            return;
+        }
+
+        this.resizer = new Konva.RegularPolygon({
+            x: 100,
+            y: 100,
+            sides: 3,
+            radius: 10,
+            fill: 'black',
+            draggable: true,
+            name: 'resizer',
+            rotation: 5
+        });
+
+        this.resizer.on('dragmove', (evt) => {
+            let width = this.resizer.x() - 12;
+            let height = this.resizer.y() - 12;
+
+            if (width >= 200) {
+                this.commentWidth = width;
+            }
+            else {
+                this.commentWidth = 200;
+            }
+
+            if (height >= 100) {
+                this.commentHeight = height;
+            }
+            else {
+                this.commentHeight = 100;
+            }
+
+            this.updateBlock();
+        });
+
+        // on entering we want to see the move mouse
+        this.resizer.on('mouseover', function () {
+            document.body.style.cursor = 'nw-resize';
+        });
+
+        // On leaving the set back the crosshair mouse
+        this.resizer.on('mouseout', function () {
+            document.body.style.cursor = 'crosshair';
+        });
+
+        this.add(this.resizer);
+    }
+
     /**
      * Create all the nodes within this box
      */
@@ -190,13 +249,19 @@ export default class Block extends Konva.Group {
      */
     createHeaderText() {
         var that = this;
+        var editable = false;
+
+        if (this.config.typ === "Comment") {
+            editable = "dblclick";
+        }
+
         var text = new Text({
             text: that.config.name.replace(/([A-Z])/g, ' $1').trim(),
             fontSize: that.config.logic.style.blockHeaderTextSize,
             x: that.config.logic.style.blockHeaderMargin,
             y: that.config.logic.style.blockHeaderMargin,
             vbm: that.config.vbm,
-            editable: that.config.nameEdit,
+            editable: editable,
             fill: that.config.logic.style.blockHeaderTextColor,
             draggable: true,
         });
@@ -238,6 +303,11 @@ export default class Block extends Konva.Group {
             }
         });
 
+        text.onTextChange = (text) => {
+            this.updateBlock();
+            return text;
+        };
+
         return text;
     }
 
@@ -265,6 +335,31 @@ export default class Block extends Konva.Group {
                 height = n.y() + n.height();
             }
         });
+
+        if (widthLeft + widthRight < this.headerText.width()) {
+            widthLeft = this.headerText.width() / 2;
+            widthRight = this.headerText.width() / 2;
+        }
+
+        if (this.config.typ === "Comment") {
+            height = this.commentHeight;
+            widthLeft = this.commentWidth / 2;
+            widthRight = this.commentWidth / 2;
+        }
+
+        if (height === 0) {
+            height = 100;
+        }
+
+        if (widthLeft === 0) {
+            widthLeft = 100;
+        }
+
+        if (widthRight === 0) {
+            widthRight = 100;
+        }
+
+
 
         return {
             height: height,
@@ -306,6 +401,11 @@ export default class Block extends Konva.Group {
         this.box.width(this.width());
         this.box.height(this.height());
 
+        if (this.config.typ === "Comment") {
+            this.resizer.x(this.width() - 12);
+            this.resizer.y(this.height() - 12);
+        }
+
         // gradient color of the box
         var headerYColorPos = ((this.headerText.height() + (this.config.logic.style.blockHeaderMargin * 2)) / this.height());
         this.box.fillLinearGradientStartPoint({ y: 0 });
@@ -316,6 +416,15 @@ export default class Block extends Konva.Group {
             headerYColorPos + 0.0001, this.config.logic.style.blockHeaderStartColor,
             1, this.config.logic.style.blockHeaderEndColor,
         ]);
+
+        if (this.config.typ === "Comment") {
+            this.box.fillLinearGradientColorStops([
+                0, this.config.logic.style.blockStartColor,
+                headerYColorPos, this.config.logic.style.blockEndColor,
+                headerYColorPos + 0.0001, "#00000033",
+                1, "#00000033",
+            ]);
+        }
 
         // update the position of all nodes
         this.nodes.getChildren().forEach(n => {

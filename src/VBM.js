@@ -20,7 +20,7 @@ export default class VBM {
         // Variable for the new connection creation
         this.newConnection = null;
 
-        // drawing group for all connections
+        // drawing group for all boxes
         this.boxGroup = new Konva.Group();
         this.layer.add(this.boxGroup);
 
@@ -177,7 +177,13 @@ export default class VBM {
                 b.y = (y - pos.y) / scale.y;
                 b.logic = JSON.parse(JSON.stringify(that.logic));
 
-                this.boxGroup.add(new Block(b));
+                let box = new Block(b);
+                this.boxGroup.add(box);
+
+                if (block.typ === "Comment") {
+                    box.moveToBottom();
+                }
+
                 this.layer.draw();
                 return true;
             }
