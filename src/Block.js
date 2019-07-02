@@ -103,6 +103,22 @@ export default class Block extends Konva.Group {
                 return (typeof child.focus === "function" && child.focus() === true);
             });
 
+            if (that.config.typ === "Comment") {
+                var commentMove = that.config.vbm.boxGroup.getChildren(child => {
+                    return (child.absolutePosition().x >= that.absolutePosition().x &&
+                        child.absolutePosition().x <= that.absolutePosition().x + that.width() &&
+                        child.absolutePosition().y >= that.absolutePosition().y &&
+                        child.absolutePosition().y <= that.absolutePosition().y + that.height());
+                });
+
+                // combine the two arrays and allow each element just once
+                move = new Set(move);
+                commentMove.forEach(e => {
+                    move.add(e);
+                });
+                move = Array.from(move);
+            }
+
             // move all selected box
             move.forEach(comp => {
                 var pos = comp.absolutePosition();
@@ -282,6 +298,22 @@ export default class Block extends Konva.Group {
             var move = that.config.vbm.boxGroup.getChildren(child => {
                 return (typeof child.focus === "function" && child.focus() === true);
             });
+
+            if (that.config.typ === "Comment") {
+                var commentMove = that.config.vbm.boxGroup.getChildren(child => {
+                    return (child.absolutePosition().x >= that.absolutePosition().x &&
+                        child.absolutePosition().x <= that.absolutePosition().x + that.width() &&
+                        child.absolutePosition().y >= that.absolutePosition().y &&
+                        child.absolutePosition().y <= that.absolutePosition().y + that.height());
+                });
+
+                // combine the two arrays and allow each element just once
+                move = new Set(move);
+                commentMove.forEach(e => {
+                    move.add(e);
+                });
+                move = Array.from(move);
+            }
 
             // move all selected box
             move.forEach(comp => {
