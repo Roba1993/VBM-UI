@@ -151,6 +151,9 @@ export default class Connection extends Konva.Line {
         this.updatePosition();
         this.getLayer().draw();
 
+        // notify the main application about a logic change
+        this.vbm.changed(true);
+
         return true;
     }
 

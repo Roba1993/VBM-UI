@@ -437,6 +437,9 @@ export default class Block extends Konva.Group {
         if (this.getLayer() !== null) {
             this.getLayer().draw();
         }
+
+        // notify the main application about a not logical change
+        this.config.vbm.changed(false);
     }
 
     getBlockInfo() {

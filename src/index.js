@@ -17,6 +17,8 @@ class VisualModeler extends HTMLElement {
         import('konva').then(Konva => {
             window.Konva = Konva;
             this.vbm = new VBM(canvas, null, width, height);
+            this.vbm.changed = this.changed;
+            this.ready();
         });
     }
 
@@ -32,6 +34,13 @@ class VisualModeler extends HTMLElement {
         return this.vbm.getBusinesModel();
     }
 
+    ready() {
+        // this function can be overwritten to get informed when the modeler is ready
+    }
+
+    changed(logicChange) {
+        // this function gets called when something has changed
+    }
 }
 
 // Register the new element with the browser.

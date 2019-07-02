@@ -185,6 +185,9 @@ export default class VBM {
                 }
 
                 this.layer.draw();
+                // notify the main application about a not logical change
+                this.changed(false);
+
                 return true;
             }
         });
@@ -327,5 +330,9 @@ export default class VBM {
         this.logic = combineDefaultLogic(logic);
         this.clear();
         this.stage.draw();
+    }
+
+    changed(logicChange) {
+        // this function gets called when something has changed
     }
 }
