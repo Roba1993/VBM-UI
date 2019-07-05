@@ -12,6 +12,7 @@ export default class Block extends Konva.Group {
         this.config = config;
         this.type = 'Block';
         (this.config.uid === undefined) ? this.id(this.config.vbm.getNewId()) : this.id(this.config.uid);
+        this.commentMove = [];
 
         this.headerText = this.createHeaderText();
         this.nodes = this.createNodes();
@@ -96,6 +97,25 @@ export default class Block extends Konva.Group {
             }
         });
 
+        box.on("mousedown", function (evt) {
+            if (that.config.typ === "Comment") {
+                let scale = this.getStage().scale();
+
+                that.commentMove = that.config.vbm.boxGroup.getChildren(child => {
+                    return (child.absolutePosition().x >= that.absolutePosition().x &&
+                        child.absolutePosition().x <= that.absolutePosition().x + (that.width() * scale.x) &&
+                        child.absolutePosition().y >= that.absolutePosition().y &&
+                        child.absolutePosition().y <= that.absolutePosition().y + (that.height() * scale.y));
+                });
+            }
+        });
+
+        box.on("mouseup", function (evt) {
+            if (that.config.typ === "Comment") {
+                that.commentMove = [];
+            }
+        });
+
         // on drag 
         box.on('dragmove', function (evt) {
             // get all selected blocks
@@ -104,16 +124,9 @@ export default class Block extends Konva.Group {
             });
 
             if (that.config.typ === "Comment") {
-                var commentMove = that.config.vbm.boxGroup.getChildren(child => {
-                    return (child.absolutePosition().x >= that.absolutePosition().x &&
-                        child.absolutePosition().x <= that.absolutePosition().x + that.width() &&
-                        child.absolutePosition().y >= that.absolutePosition().y &&
-                        child.absolutePosition().y <= that.absolutePosition().y + that.height());
-                });
-
                 // combine the two arrays and allow each element just once
                 move = new Set(move);
-                commentMove.forEach(e => {
+                that.commentMove.forEach(e => {
                     move.add(e);
                 });
                 move = Array.from(move);
@@ -292,6 +305,25 @@ export default class Block extends Konva.Group {
             document.body.style.cursor = 'crosshair';
         });
 
+        text.on("mousedown", function (evt) {
+            if (that.config.typ === "Comment") {
+                let scale = this.getStage().scale();
+
+                that.commentMove = that.config.vbm.boxGroup.getChildren(child => {
+                    return (child.absolutePosition().x >= that.absolutePosition().x &&
+                        child.absolutePosition().x <= that.absolutePosition().x + (that.width() * scale.x) &&
+                        child.absolutePosition().y >= that.absolutePosition().y &&
+                        child.absolutePosition().y <= that.absolutePosition().y + (that.height() * scale.y));
+                });
+            }
+        });
+
+        text.on("mouseup", function (evt) {
+            if (that.config.typ === "Comment") {
+                that.commentMove = [];
+            }
+        });
+
         // on drag 
         text.on('dragmove', function (evt) {
             // get all selected blocks
@@ -300,16 +332,9 @@ export default class Block extends Konva.Group {
             });
 
             if (that.config.typ === "Comment") {
-                var commentMove = that.config.vbm.boxGroup.getChildren(child => {
-                    return (child.absolutePosition().x >= that.absolutePosition().x &&
-                        child.absolutePosition().x <= that.absolutePosition().x + that.width() &&
-                        child.absolutePosition().y >= that.absolutePosition().y &&
-                        child.absolutePosition().y <= that.absolutePosition().y + that.height());
-                });
-
                 // combine the two arrays and allow each element just once
                 move = new Set(move);
-                commentMove.forEach(e => {
+                that.commentMove.forEach(e => {
                     move.add(e);
                 });
                 move = Array.from(move);
