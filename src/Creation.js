@@ -203,7 +203,7 @@ export default class Creation extends Konva.Group {
 
         var index = 0;
         that.config.vbm.logic.blocks.forEach(element => {
-            if (element.name.toLowerCase().includes(this.textarea.value.toLowerCase())) {
+            if (index < 15 && element.name.toLowerCase().includes(this.textarea.value.toLowerCase())) {
                 var name = element.name.replace(/([A-Z])/g, ' $1').trim();
 
                 var text = new Konva.Text({
